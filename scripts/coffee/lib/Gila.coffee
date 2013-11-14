@@ -86,7 +86,7 @@ module.exports = class Gila
 
 		return @
 
-	clear: (type) ->
+	clearFrameBuffer: (type) ->
 
 		unless type?
 
@@ -108,27 +108,27 @@ module.exports = class Gila
 
 		@
 
-	enable: (type) ->
+	enable: (cap) ->
 
-		if @debug and self._enableOrDisableValues.indexOf(type) is -1
+		if @debug and self._enableOrDisableValues.indexOf(cap) is -1
 
-			throw Error "Unkown type '#{type}' for gl.enable()"
+			throw Error "Unkown cap '#{cap}' for gl.enable()"
 
-		@gl.enable @gl[type]
-
-		@
-
-	disable: (type) ->
-
-		if @debug and self._enableOrDisableValues.indexOf(type) is -1
-
-			throw Error "Unkown type '#{type}' for gl.disable()"
-
-		@gl.disable @gl[type]
+		@gl.enable @gl[cap]
 
 		@
 
-	clearColor: (r, g, b, a = 1) ->
+	disable: (cap) ->
+
+		if @debug and self._enableOrDisableValues.indexOf(cap) is -1
+
+			throw Error "Unkown cap '#{cap}' for gl.disable()"
+
+		@gl.disable @gl[cap]
+
+		@
+
+	setClearColor: (r, g, b, a = 1) ->
 
 		if @debug
 
@@ -171,6 +171,66 @@ module.exports = class Gila
 			throw Error "`count` must be an integer above 0"
 
 		@gl.drawArrays mode, first, count
+
+		@
+
+	enableBlending: ->
+
+		@enable 'BLEND'
+
+		@
+
+	disableBlending: ->
+
+		@disable 'BLEND'
+
+		@
+
+	enableDepthTesting: ->
+
+		@enable 'DEPTH_TEST'
+
+		@
+
+	disableDepthTesting: ->
+
+		@disable 'DEPTH_TEST'
+
+		@
+
+	enableFaceCulling: ->
+
+		@enable 'CULL_FACE'
+
+		@
+
+	disableFaceCulling: ->
+
+		@disable 'CULL_FACE'
+
+		@
+
+	enablePolygonOffsetFilling: ->
+
+		@enable 'POLYGON_OFFSET_FILL'
+
+		@
+
+	disablePolygonOffsetFilling: ->
+
+		@disable 'POLYGON_OFFSET_FILL'
+
+		@
+
+	enableScissorTesting: ->
+
+		@enable 'SCISSOR_TEST'
+
+		@
+
+	disableScissorTesting: ->
+
+		@disable 'SCISSOR_TEST'
 
 		@
 
