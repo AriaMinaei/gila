@@ -32,12 +32,6 @@ module.exports = class Gila
 
 		@canvas = c
 
-		@viewportDims =
-
-			width: @canvas.width
-
-			height: @canvas.height
-
 	_setGl: ->
 
 		try context = @canvas.getContext "webgl"
@@ -62,13 +56,57 @@ module.exports = class Gila
 
 		new Texture @, url
 
-	prepareToDraw: ->
+	setViewoprtDims: (x, y, width, height) ->
 
-		# this is probably defining the dimensions of the canvas
-		@gl.viewport 0, 0, @viewportDims.width, @viewportDims.height
+		unless x?
 
-		# clear the canvas before drawing on it
-		@gl.clear @gl.COLOR_BUFFER_BIT | @gl.DEPTH_BUFFER_BIT
+			@gl.viewport 0, 0, @canvas.width, @canvas.height
+
+			return @
+
+		if @debug
+
+			if typeof x isnt 'number'
+
+				throw Error "x must be a number"
+
+			if typeof y isnt 'number'
+
+				throw Error "y must be a number"
+
+			if typeof width isnt 'number' or width < 0
+
+				throw Error "width must be a number greater than zero"
+
+			if typeof height isnt 'number' or height < 0
+
+				throw Error "height must be a number greater than zero"
+
+			@gl.viewport x, y, width, height
+
+		return @
+
+	clear: (type) ->
+
+		unless type?
+
+			type = @gl.COLOR_BUFFER_BIT | @gl.DEPTH_BUFFER_BIT
+
+		else if type is 'color'
+
+			type = @gl.COLOR_BUFFER_BIT
+
+		else if type is 'depth'
+
+			type = @gl.COLOR_DEPTH_BIT
+
+		else
+
+			throw Error "Wrong value for type. Provide null/color/depth"
+
+		@gl.clear type
+
+		@
 
 	enable: (type) ->
 
