@@ -6,6 +6,8 @@ scripts/coffee/pg/**
 xeno/**
 node_modules
 
+pg/**
+
 -p
 
 npm-debug.log

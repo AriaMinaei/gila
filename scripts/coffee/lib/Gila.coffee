@@ -1,6 +1,6 @@
 ShaderProgram = require './gila/ShaderProgram'
-Buffer = require './gila/Buffer'
 Texture = require './gila/Texture'
+Buffer = require './gila/Buffer'
 
 module.exports = class Gila
 
@@ -231,6 +231,22 @@ module.exports = class Gila
 	disableScissorTesting: ->
 
 		@disable 'SCISSOR_TEST'
+
+		@
+
+	cullFace: (mode, enableFaceCulling = yes) ->
+
+		if enableFaceCulling
+
+			do @enableFaceCulling
+
+		unless mode in ['FRONT', 'BACK', 'FRONT_AND_BACK']
+
+			throw Error "Unkown mode '#{mode}' for cullFace"
+
+		mode = @gl[mode]
+
+		@gl.cullFace mode
 
 		@
 
