@@ -19,9 +19,9 @@ module.exports = class Gila
 
 			canvas = canvasElOrId
 
-		@_setCanvas canvas
-
 		@debug = Boolean debug
+
+		@_setCanvas canvas
 
 		do @_setGl
 
@@ -57,7 +57,7 @@ module.exports = class Gila
 
 		new Texture @, url
 
-	setViewoprtDims: (x, y, width, height) ->
+	setViewportDims: (x, y, width, height) ->
 
 		unless x?
 
