@@ -36,7 +36,7 @@ module.exports = class ShaderProgram
 
 		return
 
-	attrib: (name) ->
+	attr: (name) ->
 
 		unless @_attribs[name]?
 

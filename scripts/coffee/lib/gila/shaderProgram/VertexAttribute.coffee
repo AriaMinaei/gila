@@ -20,6 +20,10 @@ module.exports = class VertexAttribute
 
 		@
 
+	enable: ->
+
+		do @enableVertexAttribArray
+
 	vertexAttribPointer: (size, type, normalized, stride, offset) ->
 
 		if @gila.debug

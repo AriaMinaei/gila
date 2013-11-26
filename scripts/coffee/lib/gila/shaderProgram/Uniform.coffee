@@ -17,3 +17,39 @@ module.exports = class Uniform
 		@gl.uniform1f @location, n
 
 		@
+
+	set2f: (x, y) ->
+
+		if @gila.debug
+
+			if parseFloat(x) isnt x
+
+				throw Error "x must be a float. Given: '#{x}'"
+
+			if parseFloat(y) isnt y
+
+				throw Error "y must be a float. Given: '#{y}'"
+
+		@gl.uniform2f @location, x, y
+
+		@
+
+	set3f: (x, y, z) ->
+
+		if @gila.debug
+
+			if parseFloat(x) isnt x
+
+				throw Error "x must be a float. Given: '#{x}'"
+
+			if parseFloat(y) isnt y
+
+				throw Error "y must be a float. Given: '#{y}'"
+
+			if parseFloat(z) isnt z
+
+				throw Error "z must be a float. Given: '#{z}'"
+
+		@gl.uniform3f @location, x, y, z
+
+		@
