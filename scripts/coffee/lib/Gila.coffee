@@ -1,6 +1,7 @@
 ShaderProgram = require './gila/ShaderProgram'
 Texture = require './gila/Texture'
 Buffer = require './gila/Buffer'
+WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 
 module.exports = class Gila
 

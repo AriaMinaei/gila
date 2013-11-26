@@ -13,5 +13,4 @@ pg/**
 npm-debug.log
 !*.gitkeep
 
-vendor/**
 pg-html/**
