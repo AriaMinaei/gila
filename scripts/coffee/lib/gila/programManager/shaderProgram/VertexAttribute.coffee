@@ -24,7 +24,7 @@ module.exports = class VertexAttribute
 
 		do @enableVertexAttribArray
 
-	vertexAttribPointer: (size, type, normalized, stride, offset) ->
+	_vertexAttribPointer: (size, type, normalized, stride, offset) ->
 
 		if @gila.debug
 
@@ -35,10 +35,6 @@ module.exports = class VertexAttribute
 			unless size in [1, 2, 3, 4]
 
 				throw Error "Invalid size `#{size}"
-
-			unless type in ['FLOAT', 'BYTE', 'UNSIGNED_BYTE', 'SHORT', 'UNSIGNED_SHORT', 'FIXED']
-
-				throw Error "Invalid type: #{type}"
 
 			unless normalized in [true, false]
 
@@ -52,12 +48,30 @@ module.exports = class VertexAttribute
 
 				throw Error "offset is out of range: `#{offset}`"
 
-		type = @gl[type]
-
 		@gl.vertexAttribPointer @location, size, type, normalized, stride, offset
 
 		@
 
-	readFromBuffer: ->
+	readAsFloat: (size, normalized, stride, offset) ->
 
-		@vertexAttribPointer.apply @, arguments
+		@_vertexAttribPointer size, @gl.FLOAT, normalized, stride, offset
+
+	readAsByte: (size, normalized, stride, offset) ->
+
+		@_vertexAttribPointer size, @gl.BYTE, normalized, stride, offset
+
+	readAsUnsignedByte: (size, normalized, stride, offset) ->
+
+		@_vertexAttribPointer size, @gl.UNSIGNED_BYTE, normalized, stride, offset
+
+	readAsShort: (size, normalized, stride, offset) ->
+
+		@_vertexAttribPointer size, @gl.SHORT, normalized, stride, offset
+
+	readAsUnsignedShort: (size, normalized, stride, offset) ->
+
+		@_vertexAttribPointer size, @gl.UNSIGNED_SHORT, normalized, stride, offset
+
+	readAsFixed: (size, normalized, stride, offset) ->
+
+		@_vertexAttribPointer size, @gl.FIXED, normalized, stride, offset
