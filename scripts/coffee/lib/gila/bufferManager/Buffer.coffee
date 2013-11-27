@@ -2,15 +2,11 @@ module.exports = class Buffer
 
 	self = @
 
-	constructor: (@gila, @type = 'ARRAY_BUFFER', @usage = 'STATIC_DRAW') ->
+	constructor: (@_manager, @_type, @usage = 'STATIC_DRAW') ->
+
+		@gila = @_manager
 
 		@gl = @gila.gl
-
-		if @gila.debug and self._allowedTypes.indexOf(@type) < 0
-
-			throw Error "Unkown bufffer type: `#{@type}"
-
-		@_type = @gl[@type]
 
 		if @gila.debug and self._allowedUsages.indexOf(@usage) < 0
 
@@ -22,7 +18,11 @@ module.exports = class Buffer
 
 	bind: ->
 
-		@gl.bindBuffer @_type, @buffer
+		if @_manager._bound isnt @
+
+			@gl.bindBuffer @_type, @buffer
+
+			@_manager._bound = @
 
 		@
 
@@ -33,10 +33,6 @@ module.exports = class Buffer
 		@gl.bufferData @_type, data, usage
 
 		@
-
-	@_allowedTypes: [
-		'ARRAY_BUFFER', 'ELEMENT_ARRAY_BUFFER'
-	]
 
 	@_allowedUsages: [
 		'STATIC_DRAW', 'DYNAMIC_DRAW', 'STREAM_DRAW'

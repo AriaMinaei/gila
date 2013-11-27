@@ -3,6 +3,9 @@ Texture = require './gila/Texture'
 Buffer = require './gila/Buffer'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 
+ProgramManager = require './gila/ProgramManager'
+BufferManager = require './gila/BufferManager'
+
 module.exports = class Gila
 
 	self = @
@@ -24,6 +27,10 @@ module.exports = class Gila
 		@_setCanvas canvas
 
 		do @_setGl
+
+		do @_initBufferManager
+
+		do @_initProgramManager
 
 	_setCanvas: (c) ->
 
@@ -49,9 +56,27 @@ module.exports = class Gila
 
 			@gl = context
 
+	_initProgramManager: ->
+
+		@_programManager = new ProgramManager @
+
+
+
 	makeProgram: (vertexSource, fragmentSource, id) ->
 
-		new ShaderProgram @, vertexSource, fragmentSource, id
+		@_programManager.makeProgram vertexSource, fragmentSource, id
+
+	_initBufferManager: ->
+
+		@_bufferManager = new BufferManager @
+
+	makeArrayBuffer: (usage) ->
+
+		@_bufferManager.makeArrayBuffer usage
+
+	makeElementArrayBuffer: (usage) ->
+
+		@_bufferManager.makeElementArrayBuffer usage
 
 	makeTexture: (url) ->
 
@@ -109,25 +134,6 @@ module.exports = class Gila
 
 		@
 
-	enable: (cap) ->
-
-		if @debug and self._enableOrDisableValues.indexOf(cap) is -1
-
-			throw Error "Unkown cap '#{cap}' for gl.enable()"
-
-		@gl.enable @gl[cap]
-
-		@
-
-	disable: (cap) ->
-
-		if @debug and self._enableOrDisableValues.indexOf(cap) is -1
-
-			throw Error "Unkown cap '#{cap}' for gl.disable()"
-
-		@gl.disable @gl[cap]
-
-		@
 
 	setClearColor: (r, g, b, a = 1) ->
 
@@ -151,87 +157,63 @@ module.exports = class Gila
 
 		@
 
-	makeBuffer: (type, usage) ->
-
-		new Buffer @, type, usage
-
-	drawArrays: (mode, first, count) ->
-
-		if @debug and self._drawTypes.indexOf(mode) is -1
-
-			throw Error "Invalid `mode`: '#{mode}'"
-
-		mode = @gl[mode]
-
-		if @debug and parseInt(first) isnt first
-
-			throw Error "`first` must be an integer"
-
-		if @debug and count < 0 or parseInt(count) isnt count
-
-			throw Error "`count` must be an integer above 0"
-
-		@gl.drawArrays mode, first, count
-
-		@
-
 	enableBlending: ->
 
-		@enable 'BLEND'
+		@enable @gl.BLEND
 
 		@
 
 	disableBlending: ->
 
-		@disable 'BLEND'
+		@disable @gl.BLEND
 
 		@
 
 	enableDepthTesting: ->
 
-		@enable 'DEPTH_TEST'
+		@enable @gl.DEPTH_TEST
 
 		@
 
 	disableDepthTesting: ->
 
-		@disable 'DEPTH_TEST'
+		@disable @gl.DEPTH_TEST
 
 		@
 
 	enableFaceCulling: ->
 
-		@enable 'CULL_FACE'
+		@enable @gl.CULL_FACE
 
 		@
 
 	disableFaceCulling: ->
 
-		@disable 'CULL_FACE'
+		@disable @gl.CULL_FACE
 
 		@
 
 	enablePolygonOffsetFilling: ->
 
-		@enable 'POLYGON_OFFSET_FILL'
+		@enable @gl.POLYGON_OFFSET_FILL
 
 		@
 
 	disablePolygonOffsetFilling: ->
 
-		@disable 'POLYGON_OFFSET_FILL'
+		@disable @gl.POLYGON_OFFSET_FILL
 
 		@
 
 	enableScissorTesting: ->
 
-		@enable 'SCISSOR_TEST'
+		@enable @gl.SCISSOR_TEST
 
 		@
 
 	disableScissorTesting: ->
 
-		@disable 'SCISSOR_TEST'
+		@disable @gl.SCISSOR_TEST
 
 		@
 
@@ -251,12 +233,38 @@ module.exports = class Gila
 
 		@
 
-	@_enableOrDisableValues: [
-		'BLEND', 'DEPTH_TEST', 'CULL_FACE',
-		'POLYGON_OFFSET_FILL', 'SCISSOR_TEST'
-	]
+	_drawArrays: (mode, first, count) ->
 
-	@_drawTypes: [
-		'LINE_STRIP', 'LINES', 'POINTS',
-		'TRIANGLE_STRIP', 'TRIANGLES'
-	]
+		if @debug
+
+			if parseInt(first) isnt first
+
+				throw Error "`first` must be an integer"
+
+			if count < 1 or parseInt(count) isnt count
+
+				throw Error "`count` must be an integer above 0"
+
+		@gl.drawArrays mode, first, count
+
+		@
+
+	drawTriangles: (first, count) ->
+
+		@_drawArrays @gl.TRIANGLES, first, count
+
+	drawTriangleStrip: (first, count) ->
+
+		@_drawArrays @gl.TRIANGLE_STRIP, first, count
+
+	drawLines: (first, count) ->
+
+		@_drawArrays @gl.LINES, first, count
+
+	drawLineStrip: (first, count) ->
+
+		@_drawArrays @gl.LINE_STRIP, first, count
+
+	drawPoints: (first, count) ->
+
+		@_drawArrays @gl.POINTS, first, count
