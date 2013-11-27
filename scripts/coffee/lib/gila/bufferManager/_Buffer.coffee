@@ -1,10 +1,10 @@
-module.exports = class Buffer
+module.exports = class _Buffer
 
 	self = @
 
-	constructor: (@_manager, @_type, @usage = 'STATIC_DRAW') ->
+	constructor: (@_manager, @usage = 'STATIC_DRAW') ->
 
-		@gila = @_manager
+		@gila = @_manager.gila
 
 		@gl = @gila.gl
 
@@ -15,16 +15,6 @@ module.exports = class Buffer
 		@_usage = @gl[@usage]
 
 		@buffer = @gl.createBuffer()
-
-	bind: ->
-
-		if @_manager._bound isnt @
-
-			@gl.bindBuffer @_type, @buffer
-
-			@_manager._bound = @
-
-		@
 
 	data: (data, usage = @_usage) ->
 

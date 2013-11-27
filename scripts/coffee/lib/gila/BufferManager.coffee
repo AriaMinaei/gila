@@ -1,21 +1,26 @@
-Buffer = require './bufferManager/Buffer'
+ElementArrayBufferType = require './bufferManager/buffer/ElementArrayBufferType'
+ArrayBufferType = require './bufferManager/buffer/ArrayBufferType'
 
 module.exports = class BufferManager
 
 	constructor: (@gila) ->
 
-		@gl = @gila.gl
+		@_boundArrayBuffer = null
 
-		@_bound = null
-
-	_makeBuffer: (type, usage) ->
-
-		new Buffer @, type, usage
+		@_boundElementArrayBuffer = null
 
 	makeArrayBuffer: (usage) ->
 
-		@_makeBuffer @gl.ARRAY_BUFFER, usage
+		new ArrayBufferType @, usage
 
 	makeElementArrayBuffer: (usage) ->
 
-		@_makeBuffer @gl.ELEMENT_ARRAY_BUFFER, usage
+		new ElementArrayBufferType @, usage
+
+	getBoundArrayBuffer: ->
+
+		@_boundArrayBuffer
+
+	getBoundElementArrayBuffer: ->
+
+		@_boundElementArrayBuffer

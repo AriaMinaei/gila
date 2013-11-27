@@ -1,10 +1,9 @@
+WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
+ProgramManager = require './gila/ProgramManager'
+BufferManager = require './gila/BufferManager'
 ShaderProgram = require './gila/ShaderProgram'
 Texture = require './gila/Texture'
 Buffer = require './gila/Buffer'
-WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
-
-ProgramManager = require './gila/ProgramManager'
-BufferManager = require './gila/BufferManager'
 
 module.exports = class Gila
 
@@ -60,8 +59,6 @@ module.exports = class Gila
 
 		@_programManager = new ProgramManager @
 
-
-
 	makeProgram: (vertexSource, fragmentSource, id) ->
 
 		@_programManager.makeProgram vertexSource, fragmentSource, id
@@ -77,6 +74,14 @@ module.exports = class Gila
 	makeElementArrayBuffer: (usage) ->
 
 		@_bufferManager.makeElementArrayBuffer usage
+
+	getBoundArrayBuffer: ->
+
+		@_bufferManager.getBoundArrayBuffer()
+
+	getBoundElementArrayBuffer: ->
+
+		@_bufferManager.getBoundElementArrayBuffer()
 
 	makeTexture: (url) ->
 
@@ -133,7 +138,6 @@ module.exports = class Gila
 		@gl.clear type
 
 		@
-
 
 	setClearColor: (r, g, b, a = 1) ->
 

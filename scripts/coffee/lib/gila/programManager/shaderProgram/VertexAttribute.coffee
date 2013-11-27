@@ -28,6 +28,10 @@ module.exports = class VertexAttribute
 
 		if @gila.debug
 
+			unless @gila.getBoundArrayBuffer()
+
+				throw Error "There is no bound array buffer to read from"
+
 			unless size in [1, 2, 3, 4]
 
 				throw Error "Invalid size `#{size}"
