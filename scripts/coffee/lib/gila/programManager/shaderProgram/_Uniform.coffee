@@ -7,3 +7,7 @@ module.exports = class _Uniform
 		@program = @shaderProgram.program
 
 		@location = @gl.getUniformLocation @program, @name
+
+		if @gila.debug and not @location?
+
+			throw Error "Couldn't find location of uniform '#{@name}'"
