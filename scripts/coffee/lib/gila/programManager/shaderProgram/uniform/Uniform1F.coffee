@@ -13,3 +13,9 @@ module.exports = class Uniform1F extends _NonMatrixFloatUniform
 		@gl.uniform1f @location, x
 
 		return
+
+	_fromArray: (r) ->
+
+		@gl.uniform1fv @location, r
+
+		return

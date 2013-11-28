@@ -4,10 +4,6 @@ argNames = ['x', 'y', 'z', 'w']
 
 module.exports = class _NonMatrixUniform extends _Uniform
 
-	constructor: ->
-
-		super
-
 	set: ->
 
 		if @gila.debug
@@ -17,6 +13,20 @@ module.exports = class _NonMatrixUniform extends _Uniform
 				@_validateSingleArgument arguments[i], i
 
 		@_set.apply @, arguments
+
+	fromArray: (r) ->
+
+		if @gila.debug
+
+			unless r instanceof @_arrayType
+
+				throw Error "Array must be a `#{@_arrayType.name}`"
+
+			if r.length isnt @_len
+
+				throw Error "Array length must be equal to '#{@_len}'. Given: '#{r.length}'"
+
+		@_fromArray r
 
 	_validateSingleArgument: (val, i) ->
 
