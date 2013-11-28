@@ -8,3 +8,7 @@ module.exports =
 	'2i': require './Uniform2I'
 	'3i': require './Uniform3I'
 	'4i': require './Uniform4I'
+
+	'mat2': require './UniformMat2F'
+	'mat3': require './UniformMat3F'
+	'mat4': require './UniformMat4F'
