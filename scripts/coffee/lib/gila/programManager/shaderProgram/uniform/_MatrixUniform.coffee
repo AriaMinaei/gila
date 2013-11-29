@@ -6,7 +6,7 @@ module.exports = class _MatrixUniform extends _Uniform
 
 		super
 
-	set: (mat, transpose = no) ->
+	set: (mat) ->
 
 		if @gila.debug
 
@@ -18,8 +18,8 @@ module.exports = class _MatrixUniform extends _Uniform
 
 				throw Error "Matrix's length must equal to '@{len}'. Given: '#{mat.length}'"
 
-			if Boolean(transpose) isnt transpose
+			# if Boolean(transpose) isnt transpose
 
-				throw Error "transpose must be a boolean. Given: `#{typeof transpose}`"
+			# 	throw Error "transpose must be a boolean. Given: `#{typeof transpose}`"
 
-		@_set mat, transpose
+		@_set mat

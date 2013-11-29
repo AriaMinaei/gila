@@ -8,8 +8,8 @@ module.exports = class UniformMat3F extends _MatrixUniform
 
 		super
 
-	_set: (mat, transpose) ->
+	_set: (mat) ->
 
-		@gl.uniformMatrix3fv @location, transpose, mat
+		@gl.uniformMatrix3fv @location, no, mat
 
 		return
