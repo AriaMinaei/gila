@@ -1,10 +1,13 @@
+Texture2DManager = require './gila/Texture2DManager'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 ProgramManager = require './gila/ProgramManager'
+DrawingManager = require './gila/DrawingManager'
 BufferManager = require './gila/BufferManager'
 ShaderProgram = require './gila/ShaderProgram'
 Texture = require './gila/Texture'
 Buffer = require './gila/Buffer'
 
+# we better not lose context, or all hell will break loose
 module.exports = class Gila
 
 	self = @
@@ -31,6 +34,10 @@ module.exports = class Gila
 
 		do @_initProgramManager
 
+		do @_initTexture2DManager
+
+		do @_initDrawingManager
+
 	_setCanvas: (c) ->
 
 		unless c instanceof HTMLCanvasElement
@@ -55,9 +62,17 @@ module.exports = class Gila
 
 			@gl = context
 
+	_initDrawingManager: ->
+
+		@_drawingManager = new DrawingManager @
+
+		return
+
 	_initProgramManager: ->
 
 		@_programManager = new ProgramManager @
+
+		return
 
 	makeProgram: (vertexSource, fragmentSource, id) ->
 
@@ -66,6 +81,8 @@ module.exports = class Gila
 	_initBufferManager: ->
 
 		@_bufferManager = new BufferManager @
+
+		return
 
 	makeArrayBuffer: (usage) ->
 
@@ -83,9 +100,15 @@ module.exports = class Gila
 
 		@_bufferManager.getBoundElementArrayBuffer()
 
-	makeTexture: (url) ->
+	_initTexture2DManager: ->
 
-		new Texture @, url
+		@_texture2DManager = new Texture2DManager @
+
+		return
+
+	makeTexture: (source) ->
+
+		@_texture2DManager.makeTexture source
 
 	setViewportDims: (x, y, width, height) ->
 
@@ -139,136 +162,18 @@ module.exports = class Gila
 
 		@
 
-	setClearColor: (r, g, b, a = 1) ->
+for name of DrawingManager::
 
-		if @debug
+	continue if name[0] is '_'
 
-			args = []
+	do ->
 
-			for val in [r, g, b, a]
+		func = DrawingManager::[name]
 
-				unless 0 <= val <= 1
+		Gila::[name] = ->
 
-					throw Error "You have a color component out of range: #{val}"
+			func.apply @_drawingManager, arguments
 
-				args.push parseFloat val
+			return @
 
-			@gl.clearColor.apply @gl, args
-
-		else
-
-			@gl.clearColor parseFloat(r), parseFloat(g), parseFloat(b), parseFloat(a)
-
-		@
-
-	enableBlending: ->
-
-		@enable @gl.BLEND
-
-		@
-
-	disableBlending: ->
-
-		@disable @gl.BLEND
-
-		@
-
-	enableDepthTesting: ->
-
-		@enable @gl.DEPTH_TEST
-
-		@
-
-	disableDepthTesting: ->
-
-		@disable @gl.DEPTH_TEST
-
-		@
-
-	enableFaceCulling: ->
-
-		@enable @gl.CULL_FACE
-
-		@
-
-	disableFaceCulling: ->
-
-		@disable @gl.CULL_FACE
-
-		@
-
-	enablePolygonOffsetFilling: ->
-
-		@enable @gl.POLYGON_OFFSET_FILL
-
-		@
-
-	disablePolygonOffsetFilling: ->
-
-		@disable @gl.POLYGON_OFFSET_FILL
-
-		@
-
-	enableScissorTesting: ->
-
-		@enable @gl.SCISSOR_TEST
-
-		@
-
-	disableScissorTesting: ->
-
-		@disable @gl.SCISSOR_TEST
-
-		@
-
-	cullFace: (mode, enableFaceCulling = yes) ->
-
-		if enableFaceCulling
-
-			do @enableFaceCulling
-
-		unless mode in ['FRONT', 'BACK', 'FRONT_AND_BACK']
-
-			throw Error "Unkown mode '#{mode}' for cullFace"
-
-		mode = @gl[mode]
-
-		@gl.cullFace mode
-
-		@
-
-	_drawArrays: (mode, first, count) ->
-
-		if @debug
-
-			if parseInt(first) isnt first
-
-				throw Error "`first` must be an integer"
-
-			if count < 1 or parseInt(count) isnt count
-
-				throw Error "`count` must be an integer above 0"
-
-		@gl.drawArrays mode, first, count
-
-		@
-
-	drawTriangles: (first, count) ->
-
-		@_drawArrays @gl.TRIANGLES, first, count
-
-	drawTriangleStrip: (first, count) ->
-
-		@_drawArrays @gl.TRIANGLE_STRIP, first, count
-
-	drawLines: (first, count) ->
-
-		@_drawArrays @gl.LINES, first, count
-
-	drawLineStrip: (first, count) ->
-
-		@_drawArrays @gl.LINE_STRIP, first, count
-
-	drawPoints: (first, count) ->
-
-		@_drawArrays @gl.POINTS, first, count
+		return
