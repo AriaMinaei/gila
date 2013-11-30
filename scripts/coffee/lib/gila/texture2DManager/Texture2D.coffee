@@ -1,12 +1,10 @@
-string = require '../utility/string'
+setupShortcuts = require './texture2D/setupShortcuts'
+
+T2D = WebGLRenderingContext.TEXTURE_2D
+
+slots = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 
 module.exports = class Texture2D
-
-	self = @
-
-	@TYPE_UNDEFINED: 0
-
-	@TYPE_IMAGE_ELEMENT: 1
 
 	constructor: (@_manager, source) ->
 
@@ -19,8 +17,6 @@ module.exports = class Texture2D
 		@gl = @gila.gl
 
 		@_uploaded = no
-
-		@_sourceType = self.TYPE_UNDEFINED
 
 		@_source = null
 
@@ -48,7 +44,7 @@ module.exports = class Texture2D
 
 		unless @_manager._bound is @
 
-			@gl.bindTexture @gl.TEXTURE_2D, @texture
+			@gl.bindTexture T2D, @texture
 
 			@_manager._bound = @
 
@@ -94,8 +90,6 @@ module.exports = class Texture2D
 
 		@_uploaded = no
 
-		@_sourceType = self.TYPE_IMAGE_ELEMENT
-
 		@_source = el
 
 		@_source.addEventListener 'load', =>
@@ -128,7 +122,7 @@ module.exports = class Texture2D
 
 		do @bind
 
-		@gl.texImage2D @gl.TEXTURE_2D,
+		@gl.texImage2D T2D,
 
 			# the mipmap level
 			0,
@@ -150,7 +144,7 @@ module.exports = class Texture2D
 
 		if @_options.shouldGenerateMipmap
 
-			@gl.generateMipmap @gl.TEXTURE_2D
+			@gl.generateMipmap T2D
 
 		for pname, value of @_params
 
@@ -160,7 +154,7 @@ module.exports = class Texture2D
 
 	_setParameter: (pname, param) ->
 
-		@gl.texParameteri @gl.TEXTURE_2D, pname, param
+		@gl.texParameteri T2D, pname, param
 
 		return
 
@@ -182,74 +176,16 @@ module.exports = class Texture2D
 
 			if not @_uploaded
 
-				console.warn "Texture '#{@url}' is not loaded yet"
+				console.warn "Texture isn't loaded yet"
 
 			if not (0 <= n <= 31)
 
 				throw Error "n out of range: `#{n}`"
 
-		slot = @gl['TEXTURE' + n]
-
-		@gl.activeTexture slot
+		@gl.activeTexture slots[n]
 
 		do @bind
 
 		@
 
-setupMethodShortcut = (funcPrefix, firstArg, secondArgs, cb) ->
-
-	firstArg = WebGLRenderingContext[firstArg]
-
-	for arg in secondArgs
-
-		funcName = funcPrefix + string.allUpperCaseToCamelCase(arg)
-
-		cb funcName, firstArg, WebGLRenderingContext[arg]
-
-	return
-
-
-setupMethodShortcut 'magnifyWith', 'TEXTURE_MAG_FILTER',
-
-	['NEAREST', 'LINEAR'], (funcName, pname, value) ->
-
-		Texture2D::[funcName] = ->
-
-			@_scheduleToSetParam pname, value
-
-			@
-
-		return
-
-setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
-
-	['NEAREST', 'LINEAR'], (funcName, pname, value) ->
-
-		Texture2D::[funcName] = ->
-
-			@_scheduleToSetParam pname, value
-
-			@_options.shouldGenerateMipmap = no
-
-			@
-
-		return
-
-setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
-
-	[
-		'NEAREST_MIPMAP_NEAREST', 'LINEAR_MIPMAP_NEAREST',
-		'NEAREST_MIPMAP_LINEAR', 'LINEAR_MIPMAP_LINEAR'
-	],
-
-	(funcName, pname, value) ->
-
-		Texture2D::[funcName] = ->
-
-			@_scheduleToSetParam pname, value
-
-			@_options.shouldGenerateMipmap = yes
-
-			@
-
-		return
+setupShortcuts Texture2D
