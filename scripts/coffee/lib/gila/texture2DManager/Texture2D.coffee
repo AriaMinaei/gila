@@ -80,6 +80,10 @@ module.exports = class Texture2D
 
 	_fromUrl: (url) ->
 
+		if url.length is 0
+
+			throw Error "Texture url is empty"
+
 		el = new Image
 
 		el.src = url
