@@ -1,3 +1,5 @@
+string = require '../utility/string'
+
 module.exports = class Texture2D
 
 	self = @
@@ -7,6 +9,10 @@ module.exports = class Texture2D
 	@TYPE_IMAGE_ELEMENT: 1
 
 	constructor: (@_manager, source) ->
+
+		unless source?
+
+			throw Error "`source` cannot be empty"
 
 		@gila = @_manager.gila
 
@@ -26,13 +32,17 @@ module.exports = class Texture2D
 
 			shouldGenerateMipmap: no
 
+		@_params = {}
+
 		@_format = @gl.RGBA
 
 		@texture = @gl.createTexture()
 
-		if source?
+		@_set source
 
-			@set source
+		do @magnifyWithLinear
+
+		do @minifyWithNearest
 
 	bind: ->
 
@@ -72,15 +82,15 @@ module.exports = class Texture2D
 
 		@
 
-	fromUrl: (url) ->
+	_fromUrl: (url) ->
 
 		el = new Image
 
 		el.src = url
 
-		@fromImage el
+		@_fromImage el
 
-	fromImage: (el) ->
+	_fromImage: (el) ->
 
 		@_uploaded = no
 
@@ -100,15 +110,15 @@ module.exports = class Texture2D
 
 		@
 
-	set: (source) ->
+	_set: (source) ->
 
 		if typeof source is 'string'
 
-			return @fromUrl source
+			return @_fromUrl source
 
 		else if source instanceof HTMLImageElement
 
-			return @fromImage source
+			return @_fromImage source
 
 		else
 
@@ -132,17 +142,35 @@ module.exports = class Texture2D
 			# the image itself
 			@_source
 
-		# @gl.generateMipmap @gl.TEXTURE_2D
-
-		@gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.LINEAR
-
-		@gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.LINEAR
-
-		@gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE
-
-		@gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE
+		do @_setParameters
 
 		@_uploaded = yes
+
+	_setParameters: ->
+
+		if @_options.shouldGenerateMipmap
+
+			@gl.generateMipmap @gl.TEXTURE_2D
+
+		for pname, value of @_params
+
+			@_setParameter pname, value
+
+		return
+
+	_setParameter: (pname, param) ->
+
+		@gl.texParameteri @gl.TEXTURE_2D, pname, param
+
+		return
+
+	_scheduleToSetParam: (pname, param) ->
+
+		if @_uploaded
+
+			throw Error "Texture is already uploaded"
+
+		@_params[pname] = param
 
 		return
 
@@ -167,3 +195,61 @@ module.exports = class Texture2D
 		do @bind
 
 		@
+
+setupMethodShortcut = (funcPrefix, firstArg, secondArgs, cb) ->
+
+	firstArg = WebGLRenderingContext[firstArg]
+
+	for arg in secondArgs
+
+		funcName = funcPrefix + string.allUpperCaseToCamelCase(arg)
+
+		cb funcName, firstArg, WebGLRenderingContext[arg]
+
+	return
+
+
+setupMethodShortcut 'magnifyWith', 'TEXTURE_MAG_FILTER',
+
+	['NEAREST', 'LINEAR'], (funcName, pname, value) ->
+
+		Texture2D::[funcName] = ->
+
+			@_scheduleToSetParam pname, value
+
+			@
+
+		return
+
+setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
+
+	['NEAREST', 'LINEAR'], (funcName, pname, value) ->
+
+		Texture2D::[funcName] = ->
+
+			@_scheduleToSetParam pname, value
+
+			@_options.shouldGenerateMipmap = no
+
+			@
+
+		return
+
+setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
+
+	[
+		'NEAREST_MIPMAP_NEAREST', 'LINEAR_MIPMAP_NEAREST',
+		'NEAREST_MIPMAP_LINEAR', 'LINEAR_MIPMAP_LINEAR'
+	],
+
+	(funcName, pname, value) ->
+
+		Texture2D::[funcName] = ->
+
+			@_scheduleToSetParam pname, value
+
+			@_options.shouldGenerateMipmap = yes
+
+			@
+
+		return
