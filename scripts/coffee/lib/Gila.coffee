@@ -68,6 +68,8 @@ module.exports = class Gila
 
 		@_drawingManager = new DrawingManager @
 
+		@blending = @_drawingManager.blending
+
 		return
 
 	_initProgramManager: ->

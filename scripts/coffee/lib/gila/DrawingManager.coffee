@@ -2,6 +2,8 @@
 
 [NONE, BOTH, SEPARATE] = [0, 1, 2]
 
+BlendingManager = require './drawingManager/BlendingManager'
+
 module.exports = class DrawingManager
 
 	constructor: (@gila) ->
@@ -15,6 +17,8 @@ module.exports = class DrawingManager
 		@_capabilities[CULL_FACE] = no
 		@_capabilities[POLYGON_OFFSET_FILL] = no
 		@_capabilities[SCISSOR_TEST] = no
+
+		@blending = new BlendingManager @
 
 		@_flags =
 
@@ -161,6 +165,8 @@ module.exports = class DrawingManager
 
 	_drawArrays: (mode, first, count) ->
 
+		do @blending._applyBlending
+
 		if @debug
 
 			if parseInt(first) isnt first
@@ -194,13 +200,6 @@ module.exports = class DrawingManager
 	drawPoints: (first, count) ->
 
 		@_drawArrays POINTS, first, count
-
-	@_blendingFactors: [
-		'ZERO', 'ONE', 'SRC_COLOR', 'ONE_MINUS_SRC_COLOR',
-		'DST_COLOR', 'ONE_MINUS_DST_COLOR', 'SRC_ALPHA',
-		'ONE_MINUS_SRC_ALPHA', 'DST_ALPHA', 'ONE_MINUS_DST_ALPHA',
-		'SRC_ALPHA_SATURATE'
-	]
 
 	setClearColor: (r, g, b, a = 1) ->
 
