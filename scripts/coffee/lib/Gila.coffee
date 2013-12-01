@@ -62,6 +62,8 @@ module.exports = class Gila
 
 			@gl = context
 
+		return
+
 	_initDrawingManager: ->
 
 		@_drawingManager = new DrawingManager @

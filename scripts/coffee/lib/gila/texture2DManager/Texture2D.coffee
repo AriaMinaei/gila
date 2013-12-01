@@ -108,6 +108,16 @@ module.exports = class Texture2D
 
 		@
 
+	_fromNull: ->
+
+		setTimeout =>
+
+			do @_upload
+
+		, 0
+
+		return
+
 	_set: (source) ->
 
 		if typeof source is 'string'
@@ -118,9 +128,13 @@ module.exports = class Texture2D
 
 			return @_fromImage source
 
+		else if source is null
+
+			do @_fromNull
+
 		else
 
-			throw Error "Only images or urls to images are supported for now"
+			throw Error "Only images/urls/null are supported for now"
 
 	_upload: ->
 
@@ -142,19 +156,31 @@ module.exports = class Texture2D
 
 		do @_setParameters
 
-		@_uploaded = yes
+		if @_source?
+
+			@_uploaded = yes
+
+		return
 
 	_setParameters: ->
 
 		if @_options.shouldGenerateMipmap
 
-			@gl.generateMipmap T2D
+			do @generateMipmap
 
 		for pname, value of @_params
 
 			@_setParameter pname, value
 
 		return
+
+	generateMipmap: ->
+
+		do @bind
+
+		@gl.generateMipmap T2D
+
+		@
 
 	_setParameter: (pname, param) ->
 

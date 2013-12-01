@@ -1,88 +1,161 @@
+{BLEND, DEPTH_TEST, CULL_FACE, POLYGON_OFFSET_FILL, SCISSOR_TEST, FRONT, BACK, FRONT_AND_BACK, TRIANGLES, TRIANGLE_STRIP, LINES, LINE_STRIP, POINTS} = WebGLRenderingContext
+
+[NONE, BOTH, SEPARATE] = [0, 1, 2]
+
 module.exports = class DrawingManager
 
 	constructor: (@gila) ->
 
 		@gl = @gila.gl
 
+		@_capabilities = {}
+
+		@_capabilities[BLEND] = no
+		@_capabilities[DEPTH_TEST] = no
+		@_capabilities[CULL_FACE] = no
+		@_capabilities[POLYGON_OFFSET_FILL] = no
+		@_capabilities[SCISSOR_TEST] = no
+
+		@_flags =
+
+			# Type of current face culling
+			faceCulling: null
+
+			depthBufferWritable: yes
+
+	_enable: (capability) ->
+
+		unless @_capabilities[capability]
+
+			@gl.enable capability
+
+			@_capabilities[capability] = yes
+
+		@
+
+	_disable: (capability) ->
+
+		if @_capabilities[capability]
+
+			@gl.disable capability
+
+			@_capabilities[capability] = no
+
+		@
+
 	enableBlending: ->
 
-		@enable @gl.BLEND
+		@_enable BLEND
 
 		@
 
 	disableBlending: ->
 
-		@disable @gl.BLEND
+		@_disable BLEND
 
 		@
 
 	enableDepthTesting: ->
 
-		@enable @gl.DEPTH_TEST
+		@_enable DEPTH_TEST
 
 		@
 
 	disableDepthTesting: ->
 
-		@disable @gl.DEPTH_TEST
+		@_disable DEPTH_TEST
 
 		@
 
 	enableFaceCulling: ->
 
-		@enable @gl.CULL_FACE
+		@_enable CULL_FACE
 
 		@
 
 	disableFaceCulling: ->
 
-		@disable @gl.CULL_FACE
+		@_disable CULL_FACE
 
 		@
 
 	enablePolygonOffsetFilling: ->
 
-		@enable @gl.POLYGON_OFFSET_FILL
+		@_enable POLYGON_OFFSET_FILL
 
 		@
 
 	disablePolygonOffsetFilling: ->
 
-		@disable @gl.POLYGON_OFFSET_FILL
+		@_disable POLYGON_OFFSET_FILL
 
 		@
 
 	enableScissorTesting: ->
 
-		@enable @gl.SCISSOR_TEST
+		@_enable SCISSOR_TEST
 
 		@
 
 	disableScissorTesting: ->
 
-		@disable @gl.SCISSOR_TEST
+		@_disable SCISSOR_TEST
 
 		@
 
-	enable: (what) ->
+	cullFront: (enable = yes) ->
 
-		@gl.enable what
+		do @enableFaceCulling if enable
+
+		if @_flags.faceCulling isnt FRONT
+
+			@gl.cullFace FRONT
+
+			@_flags.faceCulling = FRONT
 
 		@
 
-	cullFace: (mode, enableFaceCulling = yes) ->
+	cullBack: (enable = yes) ->
 
-		if enableFaceCulling
+		do @enableFaceCulling if enable
 
-			do @enableFaceCulling
+		if @_flags.faceCulling isnt BACK
 
-		unless mode in ['FRONT', 'BACK', 'FRONT_AND_BACK']
+			@gl.cullFace BACK
 
-			throw Error "Unkown mode '#{mode}' for cullFace"
+			@_flags.faceCulling = BACK
 
-		mode = @gl[mode]
+		@
 
-		@gl.cullFace mode
+	cullFrontAndBack: (enable = yes) ->
+
+		do @enableFaceCulling if enable
+
+		if @_faceCulling isnt FRONT_AND_BACK
+
+			@gl.cullFace FRONT_AND_BACK
+
+			@_faceCulling = FRONT_AND_BACK
+
+		@
+
+	unlockDepthBuffer: ->
+
+		unless @_flags.depthBufferWritable
+
+			@_flags.depthBufferWritable = yes
+
+			@gl.depthMask yes
+
+		@
+
+	lockDepthBuffer: ->
+
+		if @_flags.depthBufferWritable
+
+			@_flags.depthBufferWritable = no
+
+			@gl.depthMask no
 
 		@
 
@@ -104,23 +177,23 @@ module.exports = class DrawingManager
 
 	drawTriangles: (first, count) ->
 
-		@_drawArrays @gl.TRIANGLES, first, count
+		@_drawArrays TRIANGLES, first, count
 
 	drawTriangleStrip: (first, count) ->
 
-		@_drawArrays @gl.TRIANGLE_STRIP, first, count
+		@_drawArrays TRIANGLE_STRIP, first, count
 
 	drawLines: (first, count) ->
 
-		@_drawArrays @gl.LINES, first, count
+		@_drawArrays LINES, first, count
 
 	drawLineStrip: (first, count) ->
 
-		@_drawArrays @gl.LINE_STRIP, first, count
+		@_drawArrays LINE_STRIP, first, count
 
 	drawPoints: (first, count) ->
 
-		@_drawArrays @gl.POINTS, first, count
+		@_drawArrays POINTS, first, count
 
 	@_blendingFactors: [
 		'ZERO', 'ONE', 'SRC_COLOR', 'ONE_MINUS_SRC_COLOR',
