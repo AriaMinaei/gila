@@ -6,13 +6,13 @@ module.exports = class ElementArrayBufferType extends _Buffer
 
 		super
 
-		@_type = @gl.ELEMENT_ARRAY_BUFFER
+		@_type = @_gl.ELEMENT_ARRAY_BUFFER
 
 	bind: ->
 
 		if @_manager._boundElementArrayBuffer isnt @
 
-			@gl.bindBuffer @_type, @buffer
+			@_gl.bindBuffer @_type, @buffer
 
 			@_manager._boundElementArrayBuffer = @
 

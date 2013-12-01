@@ -1,13 +1,13 @@
 module.exports = class _Uniform
 
-	constructor: (@gila, @shaderProgram, @name) ->
+	constructor: (@_gila, @shaderProgram, @name) ->
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@program = @shaderProgram.program
 
-		@location = @gl.getUniformLocation @program, @name
+		@location = @_gl.getUniformLocation @program, @name
 
-		if @gila.debug and not @location?
+		if @_gila.debug and not @location?
 
 			throw Error "Couldn't find location of uniform '#{@name}'"

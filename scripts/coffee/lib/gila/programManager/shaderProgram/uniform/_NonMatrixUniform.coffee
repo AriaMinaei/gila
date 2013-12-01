@@ -6,7 +6,7 @@ module.exports = class _NonMatrixUniform extends _Uniform
 
 	set: ->
 
-		if @gila.debug
+		if @_gila.debug
 
 			for i in [0...@_len]
 
@@ -16,7 +16,7 @@ module.exports = class _NonMatrixUniform extends _Uniform
 
 	fromArray: (r) ->
 
-		if @gila.debug
+		if @_gila.debug
 
 			unless r instanceof @_arrayType
 

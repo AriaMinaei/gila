@@ -3,7 +3,7 @@ ArrayBufferType = require './bufferManager/buffer/ArrayBufferType'
 
 module.exports = class BufferManager
 
-	constructor: (@gila) ->
+	constructor: (@_gila) ->
 
 		@_boundArrayBuffer = null
 

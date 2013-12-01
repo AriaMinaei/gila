@@ -1,6 +1,6 @@
 string = require '../../utility/string'
 
-module.exports = class BlendingShortcutList
+module.exports = class BlendShortcutList
 
 	constructor: (@_manager, @_type, @_factor) ->
 
@@ -20,7 +20,7 @@ for name in factorNames
 
 		factor = WebGLRenderingContext[name]
 
-		BlendingShortcutList::[funcName] = ->
+		BlendShortcutList::[funcName] = ->
 
 			@_manager._setType @_type
 

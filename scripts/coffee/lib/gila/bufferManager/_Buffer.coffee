@@ -4,23 +4,23 @@ module.exports = class _Buffer
 
 	constructor: (@_manager, @usage = 'STATIC_DRAW') ->
 
-		@gila = @_manager.gila
+		@_gila = @_manager._gila
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
-		if @gila.debug and self._allowedUsages.indexOf(@usage) < 0
+		if @_gila.debug and self._allowedUsages.indexOf(@usage) < 0
 
 			throw Error "Unkown buffer usage type: `#{@usage}`"
 
-		@_usage = @gl[@usage]
+		@_usage = @_gl[@usage]
 
-		@buffer = @gl.createBuffer()
+		@buffer = @_gl.createBuffer()
 
 	data: (data, usage = @_usage) ->
 
 		do @bind
 
-		@gl.bufferData @_type, data, usage
+		@_gl.bufferData @_type, data, usage
 
 		@
 

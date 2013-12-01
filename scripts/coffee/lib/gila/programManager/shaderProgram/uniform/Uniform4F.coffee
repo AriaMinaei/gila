@@ -10,12 +10,12 @@ module.exports = class Uniform4F extends _NonMatrixFloatUniform
 
 	_set: (x, y, z, w) ->
 
-		@gl.uniform4f @location, x, y, z, w
+		@_gl.uniform4f @location, x, y, z, w
 
 		return
 
 	_fromArray: (r) ->
 
-		@gl.uniform4fv @location, r
+		@_gl.uniform4fv @location, r
 
 		return

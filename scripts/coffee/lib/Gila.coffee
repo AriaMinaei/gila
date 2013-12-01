@@ -4,6 +4,7 @@ ProgramManager = require './gila/ProgramManager'
 DrawingManager = require './gila/DrawingManager'
 BufferManager = require './gila/BufferManager'
 ShaderProgram = require './gila/ShaderProgram'
+exposeApi = require './gila/utility/exposeApi'
 Texture = require './gila/Texture'
 Buffer = require './gila/Buffer'
 
@@ -67,8 +68,6 @@ module.exports = class Gila
 	_initDrawingManager: ->
 
 		@_drawingManager = new DrawingManager @
-
-		@blending = @_drawingManager.blending
 
 		return
 
@@ -166,18 +165,4 @@ module.exports = class Gila
 
 		@
 
-for name of DrawingManager::
-
-	continue if name[0] is '_'
-
-	do ->
-
-		func = DrawingManager::[name]
-
-		Gila::[name] = ->
-
-			func.apply @_drawingManager, arguments
-
-			return @
-
-		return
+exposeApi DrawingManager, Gila

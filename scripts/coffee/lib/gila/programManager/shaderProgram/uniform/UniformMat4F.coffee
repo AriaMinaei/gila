@@ -10,6 +10,6 @@ module.exports = class UniformMat4F extends _MatrixUniform
 
 	_set: (mat) ->
 
-		@gl.uniformMatrix4fv @location, no, mat
+		@_gl.uniformMatrix4fv @location, no, mat
 
 		return

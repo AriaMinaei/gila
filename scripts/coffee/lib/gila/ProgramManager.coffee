@@ -2,9 +2,9 @@ ShaderProgram = require './programManager/ShaderProgram'
 
 module.exports = class ProgramManager
 
-	constructor: (@gila) ->
+	constructor: (@_gila) ->
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@_active = null
 

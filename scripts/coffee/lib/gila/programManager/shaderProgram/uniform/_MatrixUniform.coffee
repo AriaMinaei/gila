@@ -8,7 +8,7 @@ module.exports = class _MatrixUniform extends _Uniform
 
 	set: (mat) ->
 
-		if @gila.debug
+		if @_gila.debug
 
 			unless mat instanceof Float32Array
 

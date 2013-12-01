@@ -2,9 +2,9 @@ Texture2D = require './texture2DManager/Texture2D'
 
 module.exports = class Texture2DManager
 
-	constructor: (@gila) ->
+	constructor: (@_gila) ->
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@_state = {}
 
@@ -16,7 +16,7 @@ module.exports = class Texture2DManager
 
 		@_state.flipPixelStorage = Boolean flip
 
-		@gl.pixelStorei @gl.UNPACK_FLIP_Y_WEBGL, @_state.flipPixelStorage
+		@_gl.pixelStorei @_gl.UNPACK_FLIP_Y_WEBGL, @_state.flipPixelStorage
 
 		@
 

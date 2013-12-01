@@ -6,9 +6,9 @@ module.exports = class ShaderProgram
 
 	constructor: (@_manager, vertexSource, fragmentSource, @id = '') ->
 
-		@gila = @_manager.gila
+		@_gila = @_manager._gila
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@vertexShader = @_makeShader vertexSource, 'vertex', @id
 
@@ -28,7 +28,7 @@ module.exports = class ShaderProgram
 
 		unless @isActive()
 
-			@gl.useProgram @program
+			@_gl.useProgram @program
 
 			@_manager._active = @
 
@@ -36,17 +36,17 @@ module.exports = class ShaderProgram
 
 	_makeShader: (source, type) ->
 
-		new Shader @gila, source, type
+		new Shader @_gila, source, type
 
 	_prepare: ->
 
-		@program = @gl.createProgram()
+		@program = @_gl.createProgram()
 
-		@gl.attachShader @program, @vertexShader.shader
-		@gl.attachShader @program, @fragmentShader.shader
-		@gl.linkProgram @program
+		@_gl.attachShader @program, @vertexShader.shader
+		@_gl.attachShader @program, @fragmentShader.shader
+		@_gl.linkProgram @program
 
-		if @gila.debug and not @gl.getProgramParameter @program, @gl.LINK_STATUS
+		if @_gila.debug and not @_gl.getProgramParameter @program, @_gl.LINK_STATUS
 
 			throw Error "Could not initialize shader program '#{@id}'"
 
@@ -56,7 +56,7 @@ module.exports = class ShaderProgram
 
 		unless @_attribs[name]?
 
-			@_attribs[name] = new VertexAttribute @gila, @, name
+			@_attribs[name] = new VertexAttribute @_gila, @, name
 
 		@_attribs[name]
 
@@ -64,7 +64,7 @@ module.exports = class ShaderProgram
 
 		n = parseInt n
 
-		if @gila.debug and not (0 <= n <= 31)
+		if @_gila.debug and not (0 <= n <= 31)
 
 			throw Error "n out of range: `#{n}`"
 
@@ -80,7 +80,7 @@ module.exports = class ShaderProgram
 
 			@_uniforms[name] = @_makeUniform type, name
 
-		else if @gila.debug
+		else if @_gila.debug
 
 			@_makeSureUniformTypesMatch newType, @_uniforms[name], name
 
@@ -90,11 +90,11 @@ module.exports = class ShaderProgram
 
 		cls = uniforms[type]
 
-		if @gila.debug and not cls?
+		if @_gila.debug and not cls?
 
 			throw Error "Unkown uniform type `#{type}`"
 
-		new cls @gila, @, name
+		new cls @_gila, @, name
 
 	_makeSureUniformTypesMatch: (type, uniform, name) ->
 

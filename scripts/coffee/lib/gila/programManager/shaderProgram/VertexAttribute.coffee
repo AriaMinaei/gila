@@ -1,12 +1,12 @@
 module.exports = class VertexAttribute
 
-	constructor: (@gila, @shaderProgram, @name) ->
+	constructor: (@_gila, @shaderProgram, @name) ->
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@program = @shaderProgram.program
 
-		loc = @gl.getAttribLocation @program, @name
+		loc = @_gl.getAttribLocation @program, @name
 
 		if loc is -1
 
@@ -16,7 +16,7 @@ module.exports = class VertexAttribute
 
 	enableVertexAttribArray: ->
 
-		@gl.enableVertexAttribArray @location
+		@_gl.enableVertexAttribArray @location
 
 		@
 
@@ -26,9 +26,9 @@ module.exports = class VertexAttribute
 
 	_vertexAttribPointer: (size, type, normalized, stride, offset) ->
 
-		if @gila.debug
+		if @_gila.debug
 
-			unless @gila.getBoundArrayBuffer()
+			unless @_gila.getBoundArrayBuffer()
 
 				throw Error "There is no bound array buffer to read from"
 
@@ -48,30 +48,30 @@ module.exports = class VertexAttribute
 
 				throw Error "offset is out of range: `#{offset}`"
 
-		@gl.vertexAttribPointer @location, size, type, normalized, stride, offset
+		@_gl.vertexAttribPointer @location, size, type, normalized, stride, offset
 
 		@
 
 	readAsFloat: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.FLOAT, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.FLOAT, normalized, stride, offset
 
 	readAsByte: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.BYTE, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.BYTE, normalized, stride, offset
 
 	readAsUnsignedByte: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.UNSIGNED_BYTE, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.UNSIGNED_BYTE, normalized, stride, offset
 
 	readAsShort: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.SHORT, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.SHORT, normalized, stride, offset
 
 	readAsUnsignedShort: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.UNSIGNED_SHORT, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.UNSIGNED_SHORT, normalized, stride, offset
 
 	readAsFixed: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @gl.FIXED, normalized, stride, offset
+		@_vertexAttribPointer size, @_gl.FIXED, normalized, stride, offset

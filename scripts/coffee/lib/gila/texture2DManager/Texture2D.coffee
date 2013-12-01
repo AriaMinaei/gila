@@ -12,9 +12,9 @@ module.exports = class Texture2D
 
 			throw Error "`source` cannot be empty"
 
-		@gila = @_manager.gila
+		@_gila = @_manager._gila
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
 		@_uploaded = no
 
@@ -30,9 +30,9 @@ module.exports = class Texture2D
 
 		@_params = {}
 
-		@_format = @gl.RGBA
+		@_format = @_gl.RGBA
 
-		@texture = @gl.createTexture()
+		@texture = @_gl.createTexture()
 
 		@_set source
 
@@ -44,7 +44,7 @@ module.exports = class Texture2D
 
 		unless @_manager._bound is @
 
-			@gl.bindTexture T2D, @texture
+			@_gl.bindTexture T2D, @texture
 
 			@_manager._bound = @
 
@@ -62,7 +62,7 @@ module.exports = class Texture2D
 
 		@_options.hasAlpha = yes
 
-		@_format = @gl.RGBA
+		@_format = @_gl.RGBA
 
 		@
 
@@ -74,7 +74,7 @@ module.exports = class Texture2D
 
 		@_options.hasAlpha = no
 
-		@_format = @gl.RGB
+		@_format = @_gl.RGB
 
 		@
 
@@ -140,7 +140,7 @@ module.exports = class Texture2D
 
 		do @bind
 
-		@gl.texImage2D T2D,
+		@_gl.texImage2D T2D,
 
 			# the mipmap level
 			0,
@@ -149,7 +149,7 @@ module.exports = class Texture2D
 			@_format, @_format,
 
 			# type of texture data
-			@gl.UNSIGNED_BYTE,
+			@_gl.UNSIGNED_BYTE,
 
 			# the image itself
 			@_source
@@ -178,13 +178,13 @@ module.exports = class Texture2D
 
 		do @bind
 
-		@gl.generateMipmap T2D
+		@_gl.generateMipmap T2D
 
 		@
 
 	_setParameter: (pname, param) ->
 
-		@gl.texParameteri T2D, pname, param
+		@_gl.texParameteri T2D, pname, param
 
 		return
 
@@ -202,7 +202,7 @@ module.exports = class Texture2D
 
 		n = parseInt n
 
-		if @gila.debug
+		if @_gila.debug
 
 			if not @_uploaded
 
@@ -212,7 +212,7 @@ module.exports = class Texture2D
 
 				throw Error "n out of range: `#{n}`"
 
-		@gl.activeTexture slots[n]
+		@_gl.activeTexture slots[n]
 
 		do @bind
 

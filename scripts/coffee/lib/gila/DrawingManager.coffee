@@ -1,24 +1,14 @@
-{BLEND, DEPTH_TEST, CULL_FACE, POLYGON_OFFSET_FILL, SCISSOR_TEST, FRONT, BACK, FRONT_AND_BACK, TRIANGLES, TRIANGLE_STRIP, LINES, LINE_STRIP, POINTS} = WebGLRenderingContext
-
-[NONE, BOTH, SEPARATE] = [0, 1, 2]
-
-BlendingManager = require './drawingManager/BlendingManager'
+exposeApi = require './utility/exposeApi'
+BlendManager = require './drawingManager/BlendManager'
+CapabilityManager = require './drawingManager/CapabilityManager'
 
 module.exports = class DrawingManager
 
-	constructor: (@gila) ->
+	constructor: (@_gila) ->
 
-		@gl = @gila.gl
+		@_gl = @_gila.gl
 
-		@_capabilities = {}
-
-		@_capabilities[BLEND] = no
-		@_capabilities[DEPTH_TEST] = no
-		@_capabilities[CULL_FACE] = no
-		@_capabilities[POLYGON_OFFSET_FILL] = no
-		@_capabilities[SCISSOR_TEST] = no
-
-		@blending = new BlendingManager @
+		@blend = new BlendManager @
 
 		@_flags =
 
@@ -27,85 +17,7 @@ module.exports = class DrawingManager
 
 			depthBufferWritable: yes
 
-	_enable: (capability) ->
-
-		unless @_capabilities[capability]
-
-			@gl.enable capability
-
-			@_capabilities[capability] = yes
-
-		@
-
-	_disable: (capability) ->
-
-		if @_capabilities[capability]
-
-			@gl.disable capability
-
-			@_capabilities[capability] = no
-
-		@
-
-	enableBlending: ->
-
-		@_enable BLEND
-
-		@
-
-	disableBlending: ->
-
-		@_disable BLEND
-
-		@
-
-	enableDepthTesting: ->
-
-		@_enable DEPTH_TEST
-
-		@
-
-	disableDepthTesting: ->
-
-		@_disable DEPTH_TEST
-
-		@
-
-	enableFaceCulling: ->
-
-		@_enable CULL_FACE
-
-		@
-
-	disableFaceCulling: ->
-
-		@_disable CULL_FACE
-
-		@
-
-	enablePolygonOffsetFilling: ->
-
-		@_enable POLYGON_OFFSET_FILL
-
-		@
-
-	disablePolygonOffsetFilling: ->
-
-		@_disable POLYGON_OFFSET_FILL
-
-		@
-
-	enableScissorTesting: ->
-
-		@_enable SCISSOR_TEST
-
-		@
-
-	disableScissorTesting: ->
-
-		@_disable SCISSOR_TEST
-
-		@
+		@_capabilityManager = new CapabilityManager @
 
 	cullFront: (enable = yes) ->
 
@@ -113,7 +25,7 @@ module.exports = class DrawingManager
 
 		if @_flags.faceCulling isnt FRONT
 
-			@gl.cullFace FRONT
+			@_gl.cullFace FRONT
 
 			@_flags.faceCulling = FRONT
 
@@ -125,7 +37,7 @@ module.exports = class DrawingManager
 
 		if @_flags.faceCulling isnt BACK
 
-			@gl.cullFace BACK
+			@_gl.cullFace BACK
 
 			@_flags.faceCulling = BACK
 
@@ -137,7 +49,7 @@ module.exports = class DrawingManager
 
 		if @_faceCulling isnt FRONT_AND_BACK
 
-			@gl.cullFace FRONT_AND_BACK
+			@_gl.cullFace FRONT_AND_BACK
 
 			@_faceCulling = FRONT_AND_BACK
 
@@ -149,7 +61,7 @@ module.exports = class DrawingManager
 
 			@_flags.depthBufferWritable = yes
 
-			@gl.depthMask yes
+			@_gl.depthMask yes
 
 		@
 
@@ -159,13 +71,13 @@ module.exports = class DrawingManager
 
 			@_flags.depthBufferWritable = no
 
-			@gl.depthMask no
+			@_gl.depthMask no
 
 		@
 
 	_drawArrays: (mode, first, count) ->
 
-		do @blending._applyBlending
+		do @blend._apply
 
 		if @debug
 
@@ -177,7 +89,7 @@ module.exports = class DrawingManager
 
 				throw Error "`count` must be an integer above 0"
 
-		@gl.drawArrays mode, first, count
+		@_gl.drawArrays mode, first, count
 
 		@
 
@@ -215,10 +127,21 @@ module.exports = class DrawingManager
 
 				args.push parseFloat val
 
-			@gl.clearColor.apply @gl, args
+			@_gl.clearColor.apply @_gl, args
 
 		else
 
-			@gl.clearColor parseFloat(r), parseFloat(g), parseFloat(b), parseFloat(a)
+			@_gl.clearColor parseFloat(r), parseFloat(g), parseFloat(b), parseFloat(a)
 
 		@
+
+	@_methodsToExpose: '*'
+
+	@_propsToExpose: ['blend', 'blending']
+
+	@_memberName: '_drawingManager'
+
+exposeApi CapabilityManager, DrawingManager
+
+[NONE, BOTH, SEPARATE] = [0, 1, 2]
+{TRIANGLES, TRIANGLE_STRIP, LINES, LINE_STRIP, POINTS} = WebGLRenderingContext
