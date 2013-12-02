@@ -1,8 +1,9 @@
 GetParameterShortcut = require './gila/GetParameterShortcut'
 Texture2DManager = require './gila/Texture2DManager'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
-ProgramManager = require './gila/ProgramManager'
 DrawingManager = require './gila/DrawingManager'
+ProgramManager = require './gila/ProgramManager'
+TextureManager = require './gila/TextureManager'
 BufferManager = require './gila/BufferManager'
 ShaderProgram = require './gila/ShaderProgram'
 exposeApi = require './gila/utility/exposeApi'
@@ -32,11 +33,13 @@ module.exports = class Gila
 
 		do @_setGl
 
-		do @_initGet
+		do @_initParam
 
 		do @_initBufferManager
 
 		do @_initProgramManager
+
+		do @_initTextureManager
 
 		do @_initTexture2DManager
 
@@ -68,7 +71,7 @@ module.exports = class Gila
 
 		return
 
-	_initGet: ->
+	_initParam: ->
 
 		@param = new GetParameterShortcut @
 
@@ -109,6 +112,12 @@ module.exports = class Gila
 	getBoundElementArrayBuffer: ->
 
 		@_bufferManager.getBoundElementArrayBuffer()
+
+	_initTextureManager: ->
+
+		@_textureManager = new TextureManager @
+
+		return
 
 	_initTexture2DManager: ->
 

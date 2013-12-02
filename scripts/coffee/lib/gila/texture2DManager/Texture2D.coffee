@@ -6,15 +6,17 @@ slots = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 
 module.exports = class Texture2D
 
-	constructor: (@_manager, source) ->
+	constructor: (@_2DManager, source) ->
 
 		unless source?
 
 			throw Error "`source` cannot be empty"
 
-		@_gila = @_manager._gila
+		@_gila = @_2DManager._gila
 
 		@_gl = @_gila.gl
+
+		@_manager = @_gila._textureManager
 
 		@_uploaded = no
 
@@ -44,11 +46,11 @@ module.exports = class Texture2D
 
 	bind: ->
 
-		unless @_manager._bound is @
+		unless @_2DManager._bound is @
 
 			@_gl.bindTexture T2D, @texture
 
-			@_manager._bound = @
+			@_2DManager._bound = @
 
 		@
 
@@ -202,24 +204,18 @@ module.exports = class Texture2D
 
 	assignToSlot: (n) ->
 
-		n = parseInt n
-
 		if @_gila.debug
 
 			if not @_uploaded
 
 				console.warn "Texture isn't loaded yet"
 
-			if not (0 <= n <= 31)
-
-				throw Error "n out of range: `#{n}`"
-
-		@_gl.activeTexture slots[n]
-
-		do @bind
+		@_manager.assignTextureToSlot @, n
 
 		@
 
-	assignToASlot: ->
+	getSlot: ->
+
+		@_slot
 
 setupShortcuts Texture2D
