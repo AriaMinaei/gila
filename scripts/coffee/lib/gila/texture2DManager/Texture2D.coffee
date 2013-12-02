@@ -36,6 +36,8 @@ module.exports = class Texture2D
 
 		@_set source
 
+		@_slot = -1
+
 		do @magnifyWithLinear
 
 		do @minifyWithNearest
@@ -217,5 +219,7 @@ module.exports = class Texture2D
 		do @bind
 
 		@
+
+	assignToASlot: ->
 
 setupShortcuts Texture2D

@@ -1,3 +1,4 @@
+GetParameterShortcut = require './gila/GetParameterShortcut'
 Texture2DManager = require './gila/Texture2DManager'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 ProgramManager = require './gila/ProgramManager'
@@ -30,6 +31,8 @@ module.exports = class Gila
 		@_setCanvas canvas
 
 		do @_setGl
+
+		do @_initGet
 
 		do @_initBufferManager
 
@@ -64,6 +67,10 @@ module.exports = class Gila
 			@gl = context
 
 		return
+
+	_initGet: ->
+
+		@param = new GetParameterShortcut @
 
 	_initDrawingManager: ->
 

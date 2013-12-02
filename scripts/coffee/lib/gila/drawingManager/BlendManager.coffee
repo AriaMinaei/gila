@@ -50,6 +50,10 @@ module.exports = class BlendManager
 
 		return
 
+	update: ->
+
+		do @_apply
+
 	_apply: ->
 
 		return unless @_shouldUpdate
