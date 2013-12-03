@@ -159,26 +159,6 @@ module.exports = class Gila
 
 		return @
 
-	clearFrameBuffer: (type) ->
 
-		unless type?
-
-			type = @gl.COLOR_BUFFER_BIT | @gl.DEPTH_BUFFER_BIT
-
-		else if type is 'color'
-
-			type = @gl.COLOR_BUFFER_BIT
-
-		else if type is 'depth'
-
-			type = @gl.COLOR_DEPTH_BIT
-
-		else
-
-			throw Error "Wrong value for type. Provide null/color/depth"
-
-		@gl.clear type
-
-		@
 
 exposeApi DrawingManager, Gila

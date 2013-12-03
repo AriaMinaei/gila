@@ -135,6 +135,24 @@ module.exports = class DrawingManager
 
 		@
 
+	clearColorBuffer: ->
+
+		@_gl.clear COLOR_BUFFER_BIT
+
+		return
+
+	clearDepthBuffer: ->
+
+		@_gl.clear DEPTH_BUFFER_BIT
+
+		return
+
+	clear: ->
+
+		@_gl.clear BOTH_BUFFER_BITS
+
+		return
+
 	@_methodsToExpose: '*'
 
 	@_propsToExpose: ['blend', 'blending']
@@ -145,3 +163,5 @@ exposeApi CapabilityManager, DrawingManager
 
 [NONE, BOTH, SEPARATE] = [0, 1, 2]
 {TRIANGLES, TRIANGLE_STRIP, LINES, LINE_STRIP, POINTS} = WebGLRenderingContext
+{COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT} = WebGLRenderingContext
+BOTH_BUFFER_BITS = COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT
