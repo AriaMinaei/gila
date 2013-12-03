@@ -155,7 +155,7 @@ module.exports = class Gila
 
 				throw Error "height must be a number greater than zero"
 
-			@gl.viewport x, y, width, height
+		@gl.viewport x, y, width, height
 
 		return @
 

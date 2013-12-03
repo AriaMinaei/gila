@@ -6,20 +6,18 @@ module.exports = class _MatrixUniform extends _Uniform
 
 		super
 
+		unless @_gila.debug
+
+			@set = @_set
+
 	set: (mat) ->
 
-		if @_gila.debug
+		unless mat instanceof Float32Array
 
-			unless mat instanceof Float32Array
+			throw Error "Matrix must be a Float32Array"
 
-				throw Error "Matrix must be a Float32Array"
+		unless mat.length is @_len
 
-			unless mat.length is @_len
-
-				throw Error "Matrix's length must equal to '@{len}'. Given: '#{mat.length}'"
-
-			# if Boolean(transpose) isnt transpose
-
-			# 	throw Error "transpose must be a boolean. Given: `#{typeof transpose}`"
+			throw Error "Matrix's length must equal to '@{len}'. Given: '#{mat.length}'"
 
 		@_set mat

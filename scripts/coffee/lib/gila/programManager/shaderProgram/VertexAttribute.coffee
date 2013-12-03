@@ -26,6 +26,8 @@ module.exports = class VertexAttribute
 
 	_vertexAttribPointer: (size, type, normalized, stride, offset) ->
 
+		# Bottleneck
+
 		if @_gila.debug
 
 			unless @_gila.getBoundArrayBuffer()
