@@ -8,7 +8,7 @@ module.exports = class VertexAttribute
 
 		loc = @_gl.getAttribLocation @program, @name
 
-		if loc is -1
+		if @_gila.debug and loc is -1
 
 			throw Error "Could not get shader attribute location `#{@name}` for shader `#{@shaderProgram.id}`"
 

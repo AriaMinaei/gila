@@ -1,22 +1,19 @@
-Shader = require './shaderProgram/Shader'
 uniforms = require './shaderProgram/uniform/index'
 VertexAttribute = require 	'./shaderProgram/VertexAttribute'
 
 module.exports = class ShaderProgram
 
-	constructor: (@_manager, vertexSource, fragmentSource, @id = '') ->
+	constructor: (@_manager, @index, @vertex, @frag) ->
 
 		@_gila = @_manager._gila
 
 		@_gl = @_gila.gl
 
-		@vertexShader = @_makeShader vertexSource, 'vertex', @id
-
-		@fragmentShader = @_makeShader fragmentSource, 'fragment', @id
-
 		@_attribs = {}
 
 		@_uniforms = {}
+
+		@program = null
 
 		do @_prepare
 
@@ -34,21 +31,24 @@ module.exports = class ShaderProgram
 
 		@
 
-	_makeShader: (source, type) ->
+	getVariation: (flags) ->
 
-		new Shader @_gila, source, type
+		@_manager._getVariationOfProgram @, flags
 
 	_prepare: ->
 
+		@vertex.ready()
+		@frag.ready()
+
 		@program = @_gl.createProgram()
 
-		@_gl.attachShader @program, @vertexShader.shader
-		@_gl.attachShader @program, @fragmentShader.shader
+		@_gl.attachShader @program, @frag.shader
+		@_gl.attachShader @program, @vertex.shader
 		@_gl.linkProgram @program
 
 		if @_gila.debug and not @_gl.getProgramParameter @program, @_gl.LINK_STATUS
 
-			throw Error "Could not initialize shader program '#{@id}'"
+			throw Error "Could not initialize shader program '#{@index}'"
 
 		return
 
@@ -59,20 +59,6 @@ module.exports = class ShaderProgram
 			@_attribs[name] = new VertexAttribute @_gila, @, name
 
 		@_attribs[name]
-
-	assignTextureSlotToUniform: (uniformName, n) ->
-
-		n = parseInt n
-
-		if @_gila.debug and not (0 <= n <= 31)
-
-			throw Error "n out of range: `#{n}`"
-
-		uniform = @uniform '1i', uniformName
-
-		uniform.set n
-
-		@
 
 	uniform: (type, name) ->
 

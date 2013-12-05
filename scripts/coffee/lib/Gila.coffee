@@ -4,6 +4,7 @@ WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 DrawingManager = require './gila/DrawingManager'
 ProgramManager = require './gila/ProgramManager'
 TextureManager = require './gila/TextureManager'
+ShaderManager = require './gila/ShaderManager'
 BufferManager = require './gila/BufferManager'
 ShaderProgram = require './gila/ShaderProgram'
 exposeApi = require './gila/utility/exposeApi'
@@ -36,6 +37,8 @@ module.exports = class Gila
 		do @_initParam
 
 		do @_initBufferManager
+
+		do @_initShaderManager
 
 		do @_initProgramManager
 
@@ -81,15 +84,27 @@ module.exports = class Gila
 
 		return
 
+	_initShaderManager: ->
+
+		@_shaderManager = new ShaderManager @
+
+	getFragmentShader: (id, source, variation) ->
+
+		@_shaderManager.getFragmentShader id, source, variation
+
+	getVertexShader: (id, source, variation) ->
+
+		@_shaderManager.getVertexShader id, source, variation
+
 	_initProgramManager: ->
 
 		@_programManager = new ProgramManager @
 
 		return
 
-	makeProgram: (vertexSource, fragmentSource, id) ->
+	getProgram: (vertex, fragment, id) ->
 
-		@_programManager.makeProgram vertexSource, fragmentSource, id
+		@_programManager.getProgram vertex, fragment, id
 
 	_initBufferManager: ->
 
