@@ -35,10 +35,10 @@ module.exports = class ProgramManager
 
 	_getProgram: (vertex, frag) ->
 
-		index = "#{vertex.index}/#{frag.index}"
+		combinedIndex = "#{vertex.index}/#{frag.index}"
 
-		unless @_programs[index]?
+		unless @_programs[combinedIndex]?
 
-			@_programs[index] = new ShaderProgram @, index, vertex, frag
+			@_programs[combinedIndex] = new ShaderProgram @, combinedIndex, vertex, frag
 
-		@_programs[index]
+		@_programs[combinedIndex]

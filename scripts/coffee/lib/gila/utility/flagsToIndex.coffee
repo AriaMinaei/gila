@@ -6,7 +6,7 @@ module.exports = flagsToIndex = (possibleFlags, flags) ->
 
 	for flag in possibleFlags
 
-		if flags[flag] is yes
+		if flags[flag]
 
 			index += cur
 

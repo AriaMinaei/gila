@@ -24,7 +24,7 @@ module.exports = class VertexAttribute
 
 		do @enableVertexAttribArray
 
-	_vertexAttribPointer: (size, type, normalized, stride, offset) ->
+	_pointer: (size, type, normalized, stride, offset) ->
 
 		# Bottleneck
 
@@ -50,30 +50,48 @@ module.exports = class VertexAttribute
 
 				throw Error "offset is out of range: `#{offset}`"
 
+			if stride % sizes[type] isnt 0
+
+				throw Error "stride must be a multiple of the size of type, which is `#{sizes[type]}`"
+
+			if offset % sizes[type] isnt 0
+
+				throw Error "offset must be a multiple of the size of type, which is `#{sizes[type]}`"
+
 		@_gl.vertexAttribPointer @location, size, type, normalized, stride, offset
 
 		@
 
+	# 4 bytes ~ Float32Array
 	readAsFloat: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @_gl.FLOAT, normalized, stride, offset
+		@_pointer size, FLOAT, normalized, stride, offset
 
+	# 1 byte (-127 - 127) ~ Int8Array
 	readAsByte: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @_gl.BYTE, normalized, stride, offset
+		@_pointer size, BYTE, normalized, stride, offset
 
+	# 1 byte (0 - 255) ~ Uint8Array
 	readAsUnsignedByte: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @_gl.UNSIGNED_BYTE, normalized, stride, offset
+		@_pointer size, UNSIGNED_BYTE, normalized, stride, offset
 
+	# 2 bytes (-32767 to 32767) ~ Int16Array
 	readAsShort: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @_gl.SHORT, normalized, stride, offset
+		@_pointer size, SHORT, normalized, stride, offset
 
+	# 2 bytes (0 - 65535) ~ Uint16Array
 	readAsUnsignedShort: (size, normalized, stride, offset) ->
 
-		@_vertexAttribPointer size, @_gl.UNSIGNED_SHORT, normalized, stride, offset
+		@_pointer size, UNSIGNED_SHORT, normalized, stride, offsett
 
-	readAsFixed: (size, normalized, stride, offset) ->
+{FLOAT, BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT} = WebGLRenderingContext
 
-		@_vertexAttribPointer size, @_gl.FIXED, normalized, stride, offset
+sizes = {}
+sizes[FLOAT] = 4
+sizes[BYTE] = 1
+sizes[UNSIGNED_BYTE] = 1
+sizes[SHORT] = 2
+sizes[UNSIGNED_SHORT] = 2

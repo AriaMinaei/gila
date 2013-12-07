@@ -12,6 +12,8 @@ module.exports = class _MatrixUniform extends _Uniform
 
 	set: (mat) ->
 
+		super
+
 		unless mat instanceof Float32Array
 
 			throw Error "Matrix must be a Float32Array"

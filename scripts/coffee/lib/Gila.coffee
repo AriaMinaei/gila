@@ -6,15 +6,15 @@ ProgramManager = require './gila/ProgramManager'
 TextureManager = require './gila/TextureManager'
 ShaderManager = require './gila/ShaderManager'
 BufferManager = require './gila/BufferManager'
-ShaderProgram = require './gila/ShaderProgram'
+flagsToIndex = require './gila/utility/flagsToIndex'
 exposeApi = require './gila/utility/exposeApi'
-Texture = require './gila/Texture'
-Buffer = require './gila/Buffer'
 
 # we better not lose context, or all hell will break loose
 module.exports = class Gila
 
 	self = @
+
+	@flagsToIndex: flagsToIndex
 
 	constructor: (canvasElOrId, debug = no) ->
 
@@ -173,7 +173,5 @@ module.exports = class Gila
 		@gl.viewport x, y, width, height
 
 		return @
-
-
 
 exposeApi DrawingManager, Gila

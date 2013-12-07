@@ -16,6 +16,8 @@ module.exports = class _NonMatrixUniform extends _Uniform
 
 	set: ->
 
+		super
+
 		for i in [0...@_len]
 
 			@_validateSingleArgument arguments[i], i
