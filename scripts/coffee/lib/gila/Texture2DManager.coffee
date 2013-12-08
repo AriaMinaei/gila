@@ -4,21 +4,7 @@ module.exports = class Texture2DManager
 
 	constructor: (@_gila) ->
 
-		@_gl = @_gila.gl
-
-		@_state = {}
-
-		@setPixelStorageFlipping yes
-
 		@_bound = null
-
-	setPixelStorageFlipping: (flip = yes) ->
-
-		@_state.flipPixelStorage = Boolean flip
-
-		@_gl.pixelStorei @_gl.UNPACK_FLIP_Y_WEBGL, @_state.flipPixelStorage
-
-		@
 
 	makeTexture: (source) ->
 

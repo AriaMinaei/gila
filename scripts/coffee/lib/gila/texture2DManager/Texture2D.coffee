@@ -2,6 +2,8 @@ setupShortcuts = require './texture2D/setupShortcuts'
 
 T2D = WebGLRenderingContext.TEXTURE_2D
 
+{UNPACK_FLIP_Y_WEBGL} = WebGLRenderingContext
+
 slots = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 
 module.exports = class Texture2D
@@ -26,7 +28,7 @@ module.exports = class Texture2D
 
 		@_options =
 
-			flipY: yes
+			flipY: no
 
 			hasAlpha: yes
 
@@ -69,6 +71,16 @@ module.exports = class Texture2D
 		@_options.hasAlpha = yes
 
 		@_format = @_gl.RGBA
+
+		@
+
+	noFlip: ->
+
+		if @_uploaded
+
+			throw Error "The texture is already uploaded"
+
+		@_options.flipY = no
 
 		@
 
@@ -147,6 +159,8 @@ module.exports = class Texture2D
 	_upload: ->
 
 		do @bind
+
+		@_gl.pixelStorei UNPACK_FLIP_Y_WEBGL, @_options.flipY
 
 		@_gl.texImage2D T2D,
 

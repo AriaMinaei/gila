@@ -68,7 +68,7 @@ module.exports = class ShaderProgram
 
 		else if @_gila.debug
 
-			@_makeSureUniformTypesMatch newType, @_uniforms[name], name
+			@_makeSureUniformTypesMatch type, @_uniforms[name], name
 
 		@_uniforms[name]
 
