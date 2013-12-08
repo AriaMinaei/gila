@@ -22,6 +22,8 @@ module.exports = class Texture2D
 
 		@_source = null
 
+		@url = ''
+
 		@_options =
 
 			flipY: yes
@@ -99,6 +101,8 @@ module.exports = class Texture2D
 		@_uploaded = no
 
 		@_source = el
+
+		@url = el.src
 
 		@_source.addEventListener 'load', =>
 

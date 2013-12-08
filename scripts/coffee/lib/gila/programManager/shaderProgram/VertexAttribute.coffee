@@ -85,7 +85,7 @@ module.exports = class VertexAttribute
 	# 2 bytes (0 - 65535) ~ Uint16Array
 	readAsUnsignedShort: (size, normalized, stride, offset) ->
 
-		@_pointer size, UNSIGNED_SHORT, normalized, stride, offsett
+		@_pointer size, UNSIGNED_SHORT, normalized, stride, offset
 
 {FLOAT, BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT} = WebGLRenderingContext
 

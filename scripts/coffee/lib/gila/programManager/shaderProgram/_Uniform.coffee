@@ -10,7 +10,7 @@ module.exports = class _Uniform
 
 		if @_gila.debug and not @location?
 
-			throw Error "Couldn't find location of uniform '#{@name}'"
+			console.error "Couldn't find location of uniform '#{@name}'"
 
 	set: ->
 
