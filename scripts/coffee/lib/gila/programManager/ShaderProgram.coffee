@@ -48,7 +48,9 @@ module.exports = class ShaderProgram
 
 		if @_gila.debug and not @_gl.getProgramParameter @program, @_gl.LINK_STATUS
 
-			throw Error "Could not initialize shader program '#{@index}'"
+			throw Error "Could not initialize shader program '#{@index}':\n" +
+
+				@_gl.getProgramInfoLog @program
 
 		return
 

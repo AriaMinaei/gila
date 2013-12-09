@@ -19,6 +19,24 @@ module.exports = class ShaderSource
 
 	///
 
+	@_ifDefinedRx: ///
+
+		\#.*
+
+		defined\(([a-zA-Z0-9\_]+)\)
+
+	///g
+
+	@_definedRx: ///
+
+		(defined\()
+
+		([a-zA-Z0-9\_]+)
+
+		(\))
+
+	///g
+
 	constructor: (@_manager, @type, @id, @source) ->
 
 		@_gila = @_manager._gila
@@ -80,5 +98,17 @@ module.exports = class ShaderSource
 			if flags.indexOf(flag) is -1
 
 				flags.push flag
+
+		matches = source.match self._ifDefinedRx
+
+		for match in matches
+
+			for definedStatement in match.match self._definedRx
+
+				flag = definedStatement.substr 8, definedStatement.length - 9
+
+				if flags.indexOf(flag) is -1
+
+					flags.push flag
 
 		flags

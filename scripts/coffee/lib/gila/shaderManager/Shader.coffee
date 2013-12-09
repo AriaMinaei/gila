@@ -36,7 +36,7 @@ module.exports = class Shader
 
 		if @_gila.debug and not @_gl.getShaderParameter shader, @_gl.COMPILE_STATUS
 
-			throw Error "Error compiling #{shaderNames[@type]} shader '#{@index}':" +
+			throw Error "Error compiling #{shaderNames[@type]} shader '#{@index}':\n" +
 				@_gl.getShaderInfoLog shader
 
 		@shader = shader
