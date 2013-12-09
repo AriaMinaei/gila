@@ -74,13 +74,13 @@ module.exports = class Texture2D
 
 		@
 
-	noFlip: ->
+	flipY: ->
 
 		if @_uploaded
 
 			throw Error "The texture is already uploaded"
 
-		@_options.flipY = no
+		@_options.flipY = yes
 
 		@
 
