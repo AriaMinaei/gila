@@ -23,3 +23,7 @@ module.exports = class _MatrixUniform extends _Uniform
 			throw Error "Matrix's length must equal to '@{len}'. Given: '#{mat.length}'"
 
 		@_set mat
+
+	fromArray: (mat) ->
+
+		@set mat

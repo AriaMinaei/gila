@@ -2,17 +2,27 @@ string = require '../../utility/string'
 
 module.exports = (Texture2D) ->
 
+	normalSetter = (funcName, pname, value) ->
+
+		Texture2D::[funcName] = ->
+
+			@_scheduleToSetParam pname, value
+
+			@
+
+		return
+
+	setupMethodShortcut 'wrapS', 'TEXTURE_WRAP_S',
+
+		['CLAMP_TO_EDGE', 'REPEAT', 'MIRRORED_REPEAT'], normalSetter
+
+	setupMethodShortcut 'wrapT', 'TEXTURE_WRAP_T',
+
+		['CLAMP_TO_EDGE', 'REPEAT', 'MIRRORED_REPEAT'], normalSetter
+
 	setupMethodShortcut 'magnifyWith', 'TEXTURE_MAG_FILTER',
 
-		['NEAREST', 'LINEAR'], (funcName, pname, value) ->
-
-			Texture2D::[funcName] = ->
-
-				@_scheduleToSetParam pname, value
-
-				@
-
-			return
+		['NEAREST', 'LINEAR'], normalSetter
 
 	setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
 
