@@ -155,7 +155,7 @@ module.exports = class DrawingManager
 
 	@_methodsToExpose: '*'
 
-	@_propsToExpose: ['blend', 'blending']
+	@_propsToExpose: ['blend'].concat CapabilityManager._propsToExpose
 
 	@_memberName: '_drawingManager'
 
