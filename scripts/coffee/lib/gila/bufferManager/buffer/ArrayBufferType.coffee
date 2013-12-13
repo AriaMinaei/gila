@@ -1,18 +1,20 @@
 _Buffer = require '../_Buffer'
 
+{ARRAY_BUFFER} = WebGLRenderingContext
+
 module.exports = class ArrayBufferType extends _Buffer
 
 	constructor: ->
 
 		super
 
-		@_type = @_gl.ARRAY_BUFFER
+		@_type = ARRAY_BUFFER
 
 	bind: ->
 
 		if @_manager._boundArrayBuffer isnt @
 
-			@_gl.bindBuffer @_type, @buffer
+			@_gl.bindBuffer ARRAY_BUFFER, @buffer
 
 			@_manager._boundArrayBuffer = @
 

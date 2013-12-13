@@ -112,13 +112,13 @@ module.exports = class Gila
 
 		return
 
-	makeArrayBuffer: (usage) ->
+	makeArrayBuffer: ->
 
-		@_bufferManager.makeArrayBuffer usage
+		@_bufferManager.makeArrayBuffer()
 
-	makeElementArrayBuffer: (usage) ->
+	makeElementArrayBuffer: ->
 
-		@_bufferManager.makeElementArrayBuffer usage
+		@_bufferManager.makeElementArrayBuffer()
 
 	getBoundArrayBuffer: ->
 

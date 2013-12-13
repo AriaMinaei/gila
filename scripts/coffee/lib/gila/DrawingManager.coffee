@@ -161,7 +161,6 @@ module.exports = class DrawingManager
 
 exposeApi CapabilityManager, DrawingManager
 
-[NONE, BOTH, SEPARATE] = [0, 1, 2]
 {TRIANGLES, TRIANGLE_STRIP, LINES, LINE_STRIP, POINTS} = WebGLRenderingContext
 {COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT} = WebGLRenderingContext
 BOTH_BUFFER_BITS = COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT
