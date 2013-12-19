@@ -1,4 +1,6 @@
-slotEnums = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
+stupidCounter = -1
+unitEnums = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
+
 
 module.exports = class TextureManager
 
@@ -6,13 +8,23 @@ module.exports = class TextureManager
 
 		@_gl = @_gila.gl
 
-		@_maxSlots = @_gila.param.maxCombinedTextureImageUnits
+		@_maxUnits = @_gila.param.maxCombinedTextureImageUnits
 
-		@_slots = {}
+		@_units = []
 
-	assignTextureToSlot: (texture, n) ->
+		for i in [0...@_maxUnits]
 
-		return if texture._slot is n
+			@_units.push
+
+				texture: null
+
+				assignTime: -1
+
+		@activeUnit = 0
+
+	assignTextureToUnit: (texture, n) ->
+
+		return if texture._unit is n
 
 		if @_gila.debug
 
@@ -20,22 +32,74 @@ module.exports = class TextureManager
 
 				throw Error "n must be an integer"
 
-			if not (0 <= n <= @_maxSlots)
+			unless 0 <= n < @_maxUnits
 
 				throw Error "n out of range: `#{n}`"
 
-		oldTexture = @_slots[n]
+		unit = @_units[n]
 
-		if oldTexture?
+		if oldTexture = unit.texture and oldTexture?
 
-			oldTexture._slot = -1
+			if@_gila.debug and oldTexture.isUnitLocked()
 
-		@_slots[n] = texture
+				throw Error "Cannot assign texture to unit `#{n}` because this unit is locked on another texture"
 
-		texture._slot = n
+			oldTexture._unit = -1
 
-		@_gl.activeTexture slotEnums[n]
+		if prevUnit = texture.getUnit()
 
-		do texture.bind
+			@_units[prevUnit].texture = null
+
+		@_units[n].texture = texture
+
+		@_units[n].assignTime = stupidCounter++
+
+		texture._unit = n
 
 		@
+
+	assignTextureToAUnit: (texture) ->
+
+		return if texture.isAssignedToUnit()
+
+		smallestAssignTime = -1
+
+		candidateUnit = -1
+
+		for unit, n in @_units
+
+			if not unit.texture?
+
+				candidateUnit = n
+
+				break
+
+			else if unit.texture.isUnitLocked()
+
+				continue
+
+			else
+
+				if smallestAssignTime is -1 or unit.assignTime < smallestAssignTime
+
+					smallestAssignTime = unit.assignTime
+
+					candidateUnit = n
+
+		if candidateUnit is -1
+
+			throw Error "All texture units are assigned and locked"
+
+		@assignTextureToUnit texture, candidateUnit
+
+		return
+
+	activateUnit: (n) ->
+
+		return if @activeUnit is n
+
+		@activeUnit = n
+
+		@_gl.activeTexture unitEnums[n]
+
+		return

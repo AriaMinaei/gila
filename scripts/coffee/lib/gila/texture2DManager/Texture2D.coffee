@@ -4,7 +4,7 @@ T2D = WebGLRenderingContext.TEXTURE_2D
 
 {UNPACK_FLIP_Y_WEBGL} = WebGLRenderingContext
 
-slots = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
+units = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 
 module.exports = class Texture2D
 
@@ -42,7 +42,9 @@ module.exports = class Texture2D
 
 		@_set source
 
-		@_slot = -1
+		@_unit = -1
+
+		@_unitIsLocked = no
 
 		do @magnifyWithLinear
 
@@ -55,6 +57,16 @@ module.exports = class Texture2D
 			@_gl.bindTexture T2D, @texture
 
 			@_2DManager._bound = @
+
+		@
+
+	unbind: ->
+
+		if @_2DManager._bound is @
+
+			@_gl.bindTexture T2D, null
+
+			@_2DManager._bound = null
 
 		@
 
@@ -76,7 +88,7 @@ module.exports = class Texture2D
 
 	flipY: ->
 
-		if @_uploaded
+		if @_gila.debug and @_uploaded
 
 			throw Error "The texture is already uploaded"
 
@@ -86,7 +98,7 @@ module.exports = class Texture2D
 
 	noAlpha: ->
 
-		if @_uploaded
+		if @_gila.debug and @_uploaded
 
 			throw Error "The texture is already uploaded"
 
@@ -158,7 +170,7 @@ module.exports = class Texture2D
 
 	_upload: ->
 
-		do @bind
+		do @activateUnit
 
 		@_gl.pixelStorei UNPACK_FLIP_Y_WEBGL, @_options.flipY
 
@@ -198,7 +210,7 @@ module.exports = class Texture2D
 
 	generateMipmap: ->
 
-		do @bind
+		do @activateUnit
 
 		@_gl.generateMipmap T2D
 
@@ -220,20 +232,60 @@ module.exports = class Texture2D
 
 		return
 
-	assignToSlot: (n) ->
+	assignToUnit: (n) ->
 
-		if @_gila.debug
+		@_manager.assignTextureToUnit @, n
 
-			if not @_uploaded
-
-				console.warn "Texture isn't loaded yet"
-
-		@_manager.assignTextureToSlot @, n
+		do @activateUnit
 
 		@
 
-	getSlot: ->
+	assignToAUnit: ->
 
-		@_slot
+		@_manager.assignTextureToAUnit @
+
+		do @_activateUnit
+
+		@_unit
+
+	activateUnit: ->
+
+		do @assignToAUnit
+
+		do @_activateUnit
+
+		@
+
+	_activateUnit: ->
+
+		@_manager.activateUnit @_unit
+
+		do @bind
+
+		return
+
+	lockUnit: ->
+
+		@_unitIsLocked = yes
+
+		@
+
+	unlockUnit: ->
+
+		@_unitIsLocked = no
+
+		@
+
+	isUnitLocked: ->
+
+		@_unitIsLocked
+
+	getUnit: ->
+
+		if @_unit is -1 then null else @_unit
+
+	isAssignedToUnit: ->
+
+		@_unit isnt -1
 
 setupShortcuts Texture2D
