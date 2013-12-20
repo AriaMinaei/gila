@@ -1,5 +1,5 @@
 Shader = require './Shader'
-flagsToIndex = require '../utility/flagsToIndex'
+OptionsToIndex = require 'options-to-index'
 
 module.exports = class ShaderSource
 
@@ -41,7 +41,10 @@ module.exports = class ShaderSource
 
 		@_gila = @_manager._gila
 
-		@_possibleFlags = self.getPossibleFlags @source
+		@_template = self.getTemplateFor @source
+
+		# note: this is not tested
+		@_optionsToIndex = new OptionsToIndex @_template
 
 		@_variations = {}
 
@@ -63,7 +66,7 @@ module.exports = class ShaderSource
 
 		defineStatements = ''
 
-		for flag in @_possibleFlags
+		for flag of @_template
 
 			if flags[flag] is yes
 
@@ -81,23 +84,21 @@ module.exports = class ShaderSource
 
 	_getVariationIndex: (flags) ->
 
-		flagsToIndex @_possibleFlags, flags
+		@_optionsToIndex.getIndex flags
 
-	@getPossibleFlags: (source) ->
+	@getTemplateFor: (source) ->
 
-		flags = []
+		template = {}
 
 		matches = source.match self._ifdefRx
 
-		return flags unless matches?
+		return template unless matches?
 
 		for match in matches
 
 			flag = match.replace self._ifdefRemoveRx, ''
 
-			if flags.indexOf(flag) is -1
-
-				flags.push flag
+			template[flag] = null
 
 		matches = source.match self._ifDefinedRx
 
@@ -107,8 +108,6 @@ module.exports = class ShaderSource
 
 				flag = definedStatement.substr 8, definedStatement.length - 9
 
-				if flags.indexOf(flag) is -1
+				template[flag] = null
 
-					flags.push flag
-
-		flags
+		template

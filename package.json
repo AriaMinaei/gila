@@ -3,7 +3,9 @@
   "version": "0.1.0-beta2",
   "description": "WebGL in English (work in progress)",
   "main": "scripts/js/lib/Gila.js",
-  "dependencies": {},
+  "dependencies": {
+    "options-to-index": "*"
+  },
   "devDependencies": {
     "coffee-script": "~1.6.3"
   },
