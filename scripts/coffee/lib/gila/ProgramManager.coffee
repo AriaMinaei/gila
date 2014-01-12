@@ -17,7 +17,7 @@ module.exports = class ProgramManager
 
 		@_getProgram vertex, frag
 
-	getProgram: (vertex, frag, id) ->
+	getProgram: (vertex, frag, id, unique = no) ->
 
 		if @_gila.debug and (typeof vertex is 'string' or typeof frag is 'string' and not id?)
 
@@ -31,11 +31,15 @@ module.exports = class ProgramManager
 
 			frag = @_shaderManager.getFragmentShader id, frag
 
-		@_getProgram vertex, frag
+		@_getProgram vertex, frag, unique
 
-	_getProgram: (vertex, frag) ->
+	_getProgram: (vertex, frag, unique) ->
 
 		combinedIndex = "#{vertex.index}/#{frag.index}"
+
+		if unique
+
+			return new ShaderProgram @, combinedIndex, vertex, frag
 
 		unless @_programs[combinedIndex]?
 

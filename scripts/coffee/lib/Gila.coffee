@@ -1,5 +1,6 @@
 GetParameterShortcut = require './gila/GetParameterShortcut'
 Texture2DManager = require './gila/Texture2DManager'
+ExtensionManager = require './gila/ExtensionManager'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 DrawingManager = require './gila/DrawingManager'
 ProgramManager = require './gila/ProgramManager'
@@ -32,6 +33,8 @@ module.exports = class Gila
 		do @_setGl
 
 		do @_initParam
+
+		do @_initExtensionManager
 
 		do @_initBufferManager
 
@@ -71,6 +74,10 @@ module.exports = class Gila
 
 		return
 
+	_initExtensionManager: ->
+
+		@extensions = new ExtensionManager @
+
 	_initParam: ->
 
 		@param = new GetParameterShortcut @
@@ -99,9 +106,9 @@ module.exports = class Gila
 
 		return
 
-	getProgram: (vertex, fragment, id) ->
+	getProgram: (vertex, fragment, id, unique) ->
 
-		@_programManager.getProgram vertex, fragment, id
+		@_programManager.getProgram vertex, fragment, id, unique
 
 	_initBufferManager: ->
 
