@@ -30,6 +30,8 @@ module.exports = class Gila
 
 		@_setCanvas canvas
 
+		@_viewportArea = new Uint16Array 4
+
 		do @_setGl
 
 		do @_initParam
@@ -71,6 +73,8 @@ module.exports = class Gila
 		else
 
 			@gl = context
+
+		@setViewportArea 0, 0, @canvas.width, @canvas.height
 
 		return
 
@@ -148,7 +152,7 @@ module.exports = class Gila
 
 		@_texture2DManager.makeTexture source
 
-	setViewportDims: (x, y, width, height) ->
+	setViewportArea: (x, y, width, height) ->
 
 		unless x?
 
@@ -174,8 +178,17 @@ module.exports = class Gila
 
 				throw Error "height must be a number greater than zero"
 
+		@_viewportArea[0] = x
+		@_viewportArea[1] = y
+		@_viewportArea[2] = width
+		@_viewportArea[3] = height
+
 		@gl.viewport x, y, width, height
 
 		return @
+
+	getViewportArea: ->
+
+		@_viewportArea
 
 exposeApi DrawingManager, Gila

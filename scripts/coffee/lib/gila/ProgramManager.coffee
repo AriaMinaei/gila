@@ -19,7 +19,7 @@ module.exports = class ProgramManager
 
 	getProgram: (vertex, frag, id, unique = no) ->
 
-		if @_gila.debug and (typeof vertex is 'string' or typeof frag is 'string' and not id?)
+		if @_gila.debug and (typeof vertex is 'string' or typeof frag is 'string') and not id?
 
 			throw Error "If you're specifying the shaders with their source, you need to specify an id to be used as the id of those shaders"
 

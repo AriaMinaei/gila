@@ -2,15 +2,17 @@
 .htaccess
 
 scripts/js/**
-scripts/coffee/pg/**
 xeno/**
 node_modules
-
-pg/**
+pg
+scripts/dist
 
 -p
 
 npm-debug.log
 !*.gitkeep
 
-pg-html/**
+css
+.sass-cache
+
+pg*.*
