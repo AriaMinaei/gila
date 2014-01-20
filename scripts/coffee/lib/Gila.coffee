@@ -1,4 +1,5 @@
 GetParameterShortcut = require './gila/GetParameterShortcut'
+FrameBufferManager = require './gila/FrameBufferManager'
 Texture2DManager = require './gila/Texture2DManager'
 ExtensionManager = require './gila/ExtensionManager'
 WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
@@ -37,6 +38,8 @@ module.exports = class Gila
 		do @_initParam
 
 		do @_initExtensionManager
+
+		do @_initFrameBufferManager
 
 		do @_initBufferManager
 
@@ -114,6 +117,16 @@ module.exports = class Gila
 
 		@_programManager.getProgram vertex, fragment, id, unique
 
+	_initFrameBufferManager: ->
+
+		@_frameBufferManager = new FrameBufferManager @
+
+		return
+
+	makeFrameBuffer: ->
+
+		@_frameBufferManager.make()
+
 	_initBufferManager: ->
 
 		@_bufferManager = new BufferManager @
@@ -148,9 +161,9 @@ module.exports = class Gila
 
 		return
 
-	makeTexture: (source) ->
+	makeImageTexture: (source) ->
 
-		@_texture2DManager.makeTexture source
+		@_texture2DManager.makeImageTexture source
 
 	setViewportArea: (x, y, width, height) ->
 

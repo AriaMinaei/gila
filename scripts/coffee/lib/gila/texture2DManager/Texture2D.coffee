@@ -1,30 +1,14 @@
 setupShortcuts = require './texture2D/setupShortcuts'
 
-T2D = WebGLRenderingContext.TEXTURE_2D
-
-{UNPACK_FLIP_Y_WEBGL} = WebGLRenderingContext
-
-units = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
-
 module.exports = class Texture2D
 
-	constructor: (@_2DManager, source) ->
-
-		unless source?
-
-			throw Error "`source` cannot be empty"
+	constructor: (@_2DManager) ->
 
 		@_gila = @_2DManager._gila
 
 		@_gl = @_gila.gl
 
 		@_manager = @_gila._textureManager
-
-		@_uploaded = no
-
-		@_source = null
-
-		@url = ''
 
 		@_options =
 
@@ -39,8 +23,6 @@ module.exports = class Texture2D
 		@_format = @_gl.RGBA
 
 		@texture = @_gl.createTexture()
-
-		@_set source
 
 		@_unit = -1
 
@@ -69,10 +51,6 @@ module.exports = class Texture2D
 			@_2DManager._bound = null
 
 		@
-
-	isUploaded: ->
-
-		@_uploaded
 
 	withAlpha: ->
 
@@ -107,94 +85,6 @@ module.exports = class Texture2D
 		@_format = @_gl.RGB
 
 		@
-
-	_fromUrl: (url) ->
-
-		if url.length is 0
-
-			throw Error "Texture url is empty"
-
-		el = new Image
-
-		el.src = url
-
-		@_fromImage el
-
-	_fromImage: (el) ->
-
-		@_uploaded = no
-
-		@_source = el
-
-		@url = el.src
-
-		@_source.addEventListener 'load', =>
-
-			if @_uploaded
-
-				throw Error "load event is fired on source element, yet the texture is already uploaded"
-
-			do @_upload
-
-			return
-
-		@
-
-	_fromNull: ->
-
-		setTimeout =>
-
-			do @_upload
-
-		, 0
-
-		return
-
-	_set: (source) ->
-
-		if typeof source is 'string'
-
-			return @_fromUrl source
-
-		else if source instanceof HTMLImageElement
-
-			return @_fromImage source
-
-		else if source is null
-
-			do @_fromNull
-
-		else
-
-			throw Error "Only images/urls/null are supported for now"
-
-	_upload: ->
-
-		do @activateUnit
-
-		@_gl.pixelStorei UNPACK_FLIP_Y_WEBGL, @_options.flipY
-
-		@_gl.texImage2D T2D,
-
-			# the mipmap level
-			0,
-
-			# Internal/source format
-			@_format, @_format,
-
-			# type of texture data
-			@_gl.UNSIGNED_BYTE,
-
-			# the image itself
-			@_source
-
-		do @_setParameters
-
-		if @_source?
-
-			@_uploaded = yes
-
-		return
 
 	_setParameters: ->
 
@@ -288,4 +178,6 @@ module.exports = class Texture2D
 
 		@_unit isnt -1
 
+T2D = WebGLRenderingContext.TEXTURE_2D
+units = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 setupShortcuts Texture2D

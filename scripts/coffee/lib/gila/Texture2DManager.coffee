@@ -1,4 +1,4 @@
-Texture2D = require './texture2DManager/Texture2D'
+ImageTexture = require './texture2DManager/ImageTexture'
 
 module.exports = class Texture2DManager
 
@@ -6,6 +6,6 @@ module.exports = class Texture2DManager
 
 		@_bound = null
 
-	makeTexture: (source) ->
+	makeImageTexture: (source) ->
 
-		new Texture2D @, source
+		new ImageTexture @, source
