@@ -1,4 +1,5 @@
 GetParameterShortcut = require './gila/GetParameterShortcut'
+RenderBufferManager = require './gila/RenderBufferManager'
 FrameBufferManager = require './gila/FrameBufferManager'
 Texture2DManager = require './gila/Texture2DManager'
 ExtensionManager = require './gila/ExtensionManager'
@@ -40,6 +41,8 @@ module.exports = class Gila
 		do @_initExtensionManager
 
 		do @_initFrameBufferManager
+
+		do @_initRenderBufferManager
 
 		do @_initBufferManager
 
@@ -127,6 +130,16 @@ module.exports = class Gila
 
 		@_frameBufferManager.make()
 
+	_initRenderBufferManager: ->
+
+		@_renderBufferManager = new RenderBufferManager @
+
+		return
+
+	makeRenderBuffer: ->
+
+		@_renderBufferManager.make()
+
 	_initBufferManager: ->
 
 		@_bufferManager = new BufferManager @
@@ -164,6 +177,10 @@ module.exports = class Gila
 	makeImageTexture: (source) ->
 
 		@_texture2DManager.makeImageTexture source
+
+	makeEmptyTexture: ->
+
+		@_texture2DManager.makeEmptyTexture()
 
 	setViewportArea: (x, y, width, height) ->
 

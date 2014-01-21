@@ -10,17 +10,11 @@ module.exports = class ImageTexture extends Texture2D
 
 			throw Error "`source` cannot be empty"
 
-		@_uploaded = no
-
 		@_source = null
 
 		@url = ''
 
 		@_set source
-
-	isUploaded: ->
-
-		@_uploaded
 
 	_fromUrl: (url) ->
 
@@ -54,16 +48,6 @@ module.exports = class ImageTexture extends Texture2D
 
 		@
 
-	_fromNull: ->
-
-		setTimeout =>
-
-			do @_upload
-
-		, 0
-
-		return
-
 	_set: (source) ->
 
 		if typeof source is 'string'
@@ -74,13 +58,9 @@ module.exports = class ImageTexture extends Texture2D
 
 			return @_fromImage source
 
-		else if source is null
-
-			do @_fromNull
-
 		else
 
-			throw Error "Only images/urls/null are supported for now"
+			throw Error "Only images/urls are supported for now"
 
 	_upload: ->
 

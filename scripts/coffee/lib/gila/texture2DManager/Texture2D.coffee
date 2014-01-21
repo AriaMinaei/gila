@@ -22,6 +22,8 @@ module.exports = class Texture2D
 
 		@_format = @_gl.RGBA
 
+		@_uploaded = no
+
 		@texture = @_gl.createTexture()
 
 		@_unit = -1
@@ -30,7 +32,11 @@ module.exports = class Texture2D
 
 		do @magnifyWithLinear
 
-		do @minifyWithNearest
+		do @minifyWithLinear
+
+	isUploaded: ->
+
+		@_uploaded
 
 	bind: ->
 
