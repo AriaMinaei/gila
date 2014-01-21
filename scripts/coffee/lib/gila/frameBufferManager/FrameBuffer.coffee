@@ -38,14 +38,20 @@ module.exports = class FrameBuffer
 
 		@
 
+	makeTextureForColor: ->
+
+		@_gila.makeEmptyTexture()
+		.wrapSClampToEdge()
+		.wrapTClampToEdge()
+		.prepareForDims(@dims[0], @dims[1])
+
 	useTextureForColor: (t) ->
 
-		unless t?
+		if @_gila.debug and not @isBound()
 
-			t = @_gila.makeEmptyTexture()
-			.wrapSClampToEdge()
-			.wrapTClampToEdge()
-			.prepareForDims(@dims[0], @dims[1])
+			throw Error "FrameBuffer is not bound"
+
+		t = @makeTextureForColor() unless t?
 
 		@_colorTexture = t
 
@@ -53,13 +59,27 @@ module.exports = class FrameBuffer
 
 			@_gl.COLOR_ATTACHMENT0, @_gl.TEXTURE_2D, t.texture, 0
 
-		t
+		@
+
+	getColorTexture: ->
+
+		@_colorTexture
+
+	hasColorTexture: ->
+
+		@_colorTexture?
+
+	makeRenderBufferForDepth: ->
+
+		@_gila.makeRenderBuffer().storeDepth16(@dims[0], @dims[1])
 
 	useRenderBufferForDepth: (b) ->
 
-		unless b?
+		if @_gila.debug and not @isBound()
 
-			b = @_gila.makeRenderBuffer().storeDepth16(@dims[0], @dims[1])
+			throw Error "FrameBuffer is not bound"
+
+		b = @makeRenderBufferForDepth() unless b?
 
 		@_depthRenderBuffer = b
 
@@ -67,4 +87,12 @@ module.exports = class FrameBuffer
 
 			@_gl.DEPTH_ATTACHMENT, @_gl.RENDERBUFFER, b.buffer
 
-		b
+		@
+
+	getDepthRenderBuffer: ->
+
+		@_depthRenderBuffer
+
+	hasDepthRenderBuffer: ->
+
+		@_depthRenderBuffer?
