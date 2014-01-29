@@ -9,8 +9,7 @@ module.exports = class RenderBuffer
 		@buffer = @_gl.createRenderbuffer()
 
 		@dims = new Float32Array 2
-		@dims[0] = @_gila._viewportArea[2]
-		@dims[1] = @_gila._viewportArea[3]
+		@dims.set @_gila.viewportSize
 
 	isBound: ->
 

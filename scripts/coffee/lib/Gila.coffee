@@ -32,7 +32,7 @@ module.exports = class Gila
 
 		@_setCanvas canvas
 
-		@_viewportArea = new Uint16Array 4
+		@viewportSize = new Uint16Array 2
 
 		do @_setGl
 
@@ -80,7 +80,7 @@ module.exports = class Gila
 
 			@gl = context
 
-		@setViewportArea 0, 0, @canvas.width, @canvas.height
+		@setViewportSize()
 
 		return
 
@@ -182,43 +182,23 @@ module.exports = class Gila
 
 		@_texture2DManager.makeEmptyTexture()
 
-	setViewportArea: (x, y, width, height) ->
-
-		unless x?
-
-			@gl.viewport 0, 0, @canvas.width, @canvas.height
-
-			return @
+	setViewportSize: (w = @gl.drawingBufferWidth, h = @gl.drawingBufferHeight) ->
 
 		if @debug
 
-			if typeof x isnt 'number'
+			if typeof w isnt 'number' or w < 0
 
-				throw Error "x must be a number"
+				throw Error "w must be a number greater than zero"
 
-			if typeof y isnt 'number'
+			if typeof h isnt 'number' or h < 0
 
-				throw Error "y must be a number"
+				throw Error "h must be a number greater than zero"
 
-			if typeof width isnt 'number' or width < 0
+		@viewportSize[0] = w
+		@viewportSize[1] = h
 
-				throw Error "width must be a number greater than zero"
-
-			if typeof height isnt 'number' or height < 0
-
-				throw Error "height must be a number greater than zero"
-
-		@_viewportArea[0] = x
-		@_viewportArea[1] = y
-		@_viewportArea[2] = width
-		@_viewportArea[3] = height
-
-		@gl.viewport x, y, width, height
+		@gl.viewport 0, 0, w, h
 
 		return @
-
-	getViewportArea: ->
-
-		@_viewportArea
 
 exposeApi DrawingManager, Gila
