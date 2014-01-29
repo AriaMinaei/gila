@@ -1,8 +1,11 @@
 setupShortcuts = require './texture2D/setupShortcuts'
+_Emitter = require '../utility/_Emitter'
 
-module.exports = class Texture2D
+module.exports = class Texture2D extends _Emitter
 
 	constructor: (@_2DManager) ->
+
+		super
 
 		@_gila = @_2DManager._gila
 
@@ -16,7 +19,7 @@ module.exports = class Texture2D
 
 			hasAlpha: yes
 
-			shouldGenerateMipmap: no
+		@_shouldGenerateMipmap = no
 
 		@_params = {}
 
@@ -57,76 +60,6 @@ module.exports = class Texture2D
 			@_2DManager._bound = null
 
 		@
-
-	withAlpha: ->
-
-		if @_uploaded
-
-			throw Error "The texture is already uploaded"
-
-		@_options.hasAlpha = yes
-
-		@_format = @_gl.RGBA
-
-		@
-
-	flipY: ->
-
-		if @_gila.debug and @_uploaded
-
-			throw Error "The texture is already uploaded"
-
-		@_options.flipY = yes
-
-		@
-
-	noAlpha: ->
-
-		if @_gila.debug and @_uploaded
-
-			throw Error "The texture is already uploaded"
-
-		@_options.hasAlpha = no
-
-		@_format = @_gl.RGB
-
-		@
-
-	_setParameters: ->
-
-		if @_options.shouldGenerateMipmap
-
-			do @generateMipmap
-
-		for pname, value of @_params
-
-			@_setParameter pname, value
-
-		return
-
-	generateMipmap: ->
-
-		do @activateUnit
-
-		@_gl.generateMipmap T2D
-
-		@
-
-	_setParameter: (pname, param) ->
-
-		@_gl.texParameteri T2D, pname, param
-
-		return
-
-	_scheduleToSetParam: (pname, param) ->
-
-		if @_uploaded
-
-			throw Error "Texture is already uploaded"
-
-		@_params[pname] = param
-
-		return
 
 	assignToUnit: (n) ->
 
@@ -184,6 +117,73 @@ module.exports = class Texture2D
 
 		@_unit isnt -1
 
+	withAlpha: ->
+
+		if @_uploaded
+
+			throw Error "The texture is already uploaded"
+
+		@_options.hasAlpha = yes
+
+		@_format = @_gl.RGBA
+
+		@
+
+	flipY: ->
+
+		if @_gila.debug and @_uploaded
+
+			throw Error "The texture is already uploaded"
+
+		@_options.flipY = yes
+
+		@
+
+	noAlpha: ->
+
+		if @_gila.debug and @_uploaded
+
+			throw Error "The texture is already uploaded"
+
+		@_options.hasAlpha = no
+
+		@_format = @_gl.RGB
+
+		@
+
+	generateMipmap: ->
+
+		return @ if @_shouldGenerateMipmap
+
+		@_shouldGenerateMipmap = yes
+
+		@on 'upload', =>
+
+			@_generateMipmap()
+
+		if @_uploaded
+
+			do @_generateMipmap
+
+		return
+
+	_generateMipmap: ->
+
+		do @bind
+
+		@_gl.generateMipmap T2D
+
+		@
+
+	_setParam: (pname, param) ->
+
+		do @bind
+
+		@_params[pname] = param
+
+		@_gl.texParameteri T2D, pname, param
+
+		return
+
 T2D = WebGLRenderingContext.TEXTURE_2D
-units = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
 setupShortcuts Texture2D

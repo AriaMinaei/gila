@@ -6,7 +6,7 @@ module.exports = (Texture2D) ->
 
 		Texture2D::[funcName] = ->
 
-			@_scheduleToSetParam pname, value
+			@_setParam pname, value
 
 			@
 
@@ -26,17 +26,7 @@ module.exports = (Texture2D) ->
 
 	setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
 
-		['NEAREST', 'LINEAR'], (funcName, pname, value) ->
-
-			Texture2D::[funcName] = ->
-
-				@_scheduleToSetParam pname, value
-
-				@_options.shouldGenerateMipmap = no
-
-				@
-
-			return
+		['NEAREST', 'LINEAR'], normalSetter
 
 	setupMethodShortcut 'minifyWith', 'TEXTURE_MIN_FILTER',
 
@@ -49,9 +39,9 @@ module.exports = (Texture2D) ->
 
 			Texture2D::[funcName] = ->
 
-				@_scheduleToSetParam pname, value
+				do @generateMipmap
 
-				@_options.shouldGenerateMipmap = yes
+				@_setParam pname, value
 
 				@
 

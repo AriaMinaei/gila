@@ -29,9 +29,11 @@ module.exports = class EmptyTexture extends Texture2D
 
 			null
 
+		@_uploaded = yes
+
 		do @_setParameters
 
-		@_uploaded = yes
+		# @_emit 'upload'
 
 		@
 

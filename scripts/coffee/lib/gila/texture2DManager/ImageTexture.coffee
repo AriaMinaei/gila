@@ -40,7 +40,7 @@ module.exports = class ImageTexture extends Texture2D
 
 			if @_uploaded
 
-				throw Error "load event is fired on source element, yet the texture is already uploaded"
+				throw Error "'load' event is fired on source element, yet the texture is already uploaded"
 
 			do @_upload
 
@@ -82,11 +82,9 @@ module.exports = class ImageTexture extends Texture2D
 			# the image itself
 			@_source
 
-		do @_setParameters
+		@_uploaded = yes
 
-		if @_source?
-
-			@_uploaded = yes
+		@_emit 'upload'
 
 		return
 
