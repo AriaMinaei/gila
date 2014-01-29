@@ -8,6 +8,8 @@ module.exports = class EmptyTexture extends Texture2D
 
 	prepareForDims: (width, height) ->
 
+		debugger
+
 		do @activateUnit
 
 		@_gl.texImage2D T2D,
@@ -15,25 +17,27 @@ module.exports = class EmptyTexture extends Texture2D
 			# the mipmap level
 			0,
 
+			# internal format
 			@_format,
 
 			# dims
 			width, height,
 
+			# border
 			0,
 
+			# format
 			@_format,
 
 			# type of texture data
 			@_gl.UNSIGNED_BYTE,
 
+			# pixels
 			null
 
 		@_uploaded = yes
 
-		do @_setParameters
-
-		# @_emit 'upload'
+		@_emit 'upload'
 
 		@
 

@@ -80,7 +80,7 @@ module.exports = class Gila
 
 			@gl = context
 
-		@setViewportSize()
+		@fitViewportSize()
 
 		return
 
@@ -182,7 +182,11 @@ module.exports = class Gila
 
 		@_texture2DManager.makeEmptyTexture()
 
-	setViewportSize: (w = @gl.drawingBufferWidth, h = @gl.drawingBufferHeight) ->
+	fitViewportSize: ->
+
+		@setViewportSize @gl.drawingBufferWidth, @gl.drawingBufferHeight
+
+	setViewportSize: (w, h) ->
 
 		if @debug
 
@@ -199,6 +203,6 @@ module.exports = class Gila
 
 		@gl.viewport 0, 0, w, h
 
-		return @
+		@
 
 exposeApi DrawingManager, Gila

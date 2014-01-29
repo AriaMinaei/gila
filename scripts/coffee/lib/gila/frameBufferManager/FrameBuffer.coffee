@@ -8,8 +8,7 @@ module.exports = class FrameBuffer
 
 		@_fb = @_gl.createFramebuffer()
 
-		@dims = new Float32Array 2
-		@dims.set @_gila.viewportSize
+		@dims = new Float32Array @_gila.viewportSize
 
 		@_colorTexture = null
 
@@ -40,9 +39,9 @@ module.exports = class FrameBuffer
 	makeTextureForColor: ->
 
 		@_gila.makeEmptyTexture()
+		.prepareForDims(@dims[0], @dims[1])
 		.wrapSClampToEdge()
 		.wrapTClampToEdge()
-		.prepareForDims(@dims[0], @dims[1])
 
 	useTextureForColor: (t) ->
 

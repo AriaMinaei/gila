@@ -1,6 +1,5 @@
 stupidCounter = -1
-unitEnums = for i in [0..32] then WebGLRenderingContext['TEXTURE' + i]
-
+unitEnums = for i in [0...32] then WebGLRenderingContext['TEXTURE' + i]
 
 module.exports = class TextureManager
 

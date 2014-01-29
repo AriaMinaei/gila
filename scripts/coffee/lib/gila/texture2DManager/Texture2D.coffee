@@ -169,7 +169,7 @@ module.exports = class Texture2D extends _Emitter
 
 	_generateMipmap: ->
 
-		do @bind
+		do @activateUnit
 
 		@_gl.generateMipmap T2D
 
@@ -177,7 +177,7 @@ module.exports = class Texture2D extends _Emitter
 
 	_setParam: (pname, param) ->
 
-		do @bind
+		do @activateUnit
 
 		@_params[pname] = param
 
