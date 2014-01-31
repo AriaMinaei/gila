@@ -8,8 +8,6 @@ module.exports = class EmptyTexture extends Texture2D
 
 	prepareForDims: (width, height) ->
 
-		debugger
-
 		do @activateUnit
 
 		@_gl.texImage2D T2D,
@@ -35,7 +33,7 @@ module.exports = class EmptyTexture extends Texture2D
 			# pixels
 			null
 
-		@_uploaded = yes
+		@uploaded = yes
 
 		@_emit 'upload'
 

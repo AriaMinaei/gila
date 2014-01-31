@@ -164,7 +164,7 @@ module.exports = class Gila
 
 	_initTextureManager: ->
 
-		@_textureManager = new TextureManager @
+		@textures = new TextureManager @
 
 		return
 

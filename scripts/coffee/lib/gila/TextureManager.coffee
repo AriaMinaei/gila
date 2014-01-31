@@ -1,9 +1,14 @@
+_Emitter = require './utility/_Emitter'
+array = require 'utila/scripts/js/lib/array'
+
 stupidCounter = -1
 unitEnums = for i in [0...32] then WebGLRenderingContext['TEXTURE' + i]
 
-module.exports = class TextureManager
+module.exports = class TextureManager extends _Emitter
 
 	constructor: (@_gila) ->
+
+		super
 
 		@_gl = @_gila.gl
 
@@ -21,7 +26,11 @@ module.exports = class TextureManager
 
 		@activeUnit = 0
 
-	assignTextureToUnit: (texture, n) ->
+		@_texturesQueuedForUpload = 0
+
+		@isReady = yes
+
+	_assignTextureToUnit: (texture, n) ->
 
 		return if texture._unit is n
 
@@ -57,7 +66,7 @@ module.exports = class TextureManager
 
 		@
 
-	assignTextureToAUnit: (texture) ->
+	_assignTextureToAUnit: (texture) ->
 
 		return if texture.isAssignedToUnit()
 
@@ -89,16 +98,40 @@ module.exports = class TextureManager
 
 			throw Error "All texture units are assigned and locked"
 
-		@assignTextureToUnit texture, candidateUnit
+		@_assignTextureToUnit texture, candidateUnit
 
 		return
 
-	activateUnit: (n) ->
+	_activateUnit: (n) ->
 
 		return if @activeUnit is n
 
 		@activeUnit = n
 
 		@_gl.activeTexture unitEnums[n]
+
+		return
+
+	_waitForTexture: (t) ->
+
+		@_texturesQueuedForUpload++
+
+		@isReady = no
+
+		@_emit 'not-ready'
+		@_emit 'ready-state-change'
+
+		return
+
+	_textureIsDoneLoading: (t) ->
+
+		@_texturesQueuedForUpload--
+
+		if @_texturesQueuedForUpload is 0
+
+			@isReady = yes
+
+			@_emit 'ready'
+			@_emit 'ready-state-change'
 
 		return

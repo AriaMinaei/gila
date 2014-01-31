@@ -11,7 +11,7 @@ module.exports = class Texture2D extends _Emitter
 
 		@_gl = @_gila.gl
 
-		@_manager = @_gila._textureManager
+		@_manager = @_gila.textures
 
 		@_options =
 
@@ -25,7 +25,7 @@ module.exports = class Texture2D extends _Emitter
 
 		@_format = @_gl.RGBA
 
-		@_uploaded = no
+		@uploaded = no
 
 		@texture = @_gl.createTexture()
 
@@ -39,7 +39,7 @@ module.exports = class Texture2D extends _Emitter
 
 	isUploaded: ->
 
-		@_uploaded
+		@uploaded
 
 	bind: ->
 
@@ -63,7 +63,7 @@ module.exports = class Texture2D extends _Emitter
 
 	assignToUnit: (n) ->
 
-		@_manager.assignTextureToUnit @, n
+		@_manager._assignTextureToUnit @, n
 
 		do @activateUnit
 
@@ -71,7 +71,7 @@ module.exports = class Texture2D extends _Emitter
 
 	assignToAUnit: ->
 
-		@_manager.assignTextureToAUnit @
+		@_manager._assignTextureToAUnit @
 
 		do @_activateUnit
 
@@ -87,7 +87,7 @@ module.exports = class Texture2D extends _Emitter
 
 	_activateUnit: ->
 
-		@_manager.activateUnit @_unit
+		@_manager._activateUnit @_unit
 
 		do @bind
 
@@ -119,7 +119,7 @@ module.exports = class Texture2D extends _Emitter
 
 	withAlpha: ->
 
-		if @_uploaded
+		if @uploaded
 
 			throw Error "The texture is already uploaded"
 
@@ -131,7 +131,7 @@ module.exports = class Texture2D extends _Emitter
 
 	flipY: ->
 
-		if @_gila.debug and @_uploaded
+		if @_gila.debug and @uploaded
 
 			throw Error "The texture is already uploaded"
 
@@ -141,7 +141,7 @@ module.exports = class Texture2D extends _Emitter
 
 	noAlpha: ->
 
-		if @_gila.debug and @_uploaded
+		if @_gila.debug and @uploaded
 
 			throw Error "The texture is already uploaded"
 
@@ -161,7 +161,7 @@ module.exports = class Texture2D extends _Emitter
 
 			@_generateMipmap()
 
-		if @_uploaded
+		if @uploaded
 
 			do @_generateMipmap
 

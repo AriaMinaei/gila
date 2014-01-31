@@ -1,6 +1,6 @@
 {
   "name": "gila",
-  "version": "0.1.0-beta.6",
+  "version": "0.1.0-beta.7",
   "description": "WebGL in English (work in progress)",
   "main": "scripts/js/lib/Gila.js",
   "dependencies": {

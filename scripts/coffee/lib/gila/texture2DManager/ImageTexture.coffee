@@ -16,6 +16,12 @@ module.exports = class ImageTexture extends Texture2D
 
 		@_set source
 
+		@_manager._waitForTexture @
+
+		@once 'upload', =>
+
+			@_manager._textureIsDoneLoading @
+
 	_fromUrl: (url) ->
 
 		if url.length is 0
@@ -30,7 +36,7 @@ module.exports = class ImageTexture extends Texture2D
 
 	_fromImage: (el) ->
 
-		@_uploaded = no
+		@uploaded = no
 
 		@_source = el
 
@@ -38,7 +44,7 @@ module.exports = class ImageTexture extends Texture2D
 
 		@_source.addEventListener 'load', =>
 
-			if @_uploaded
+			if @uploaded
 
 				throw Error "'load' event is fired on source element, yet the texture is already uploaded"
 
@@ -82,7 +88,7 @@ module.exports = class ImageTexture extends Texture2D
 			# the image itself
 			@_source
 
-		@_uploaded = yes
+		@uploaded = yes
 
 		@_emit 'upload'
 
