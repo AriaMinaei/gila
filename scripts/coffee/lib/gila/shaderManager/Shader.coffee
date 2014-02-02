@@ -36,7 +36,26 @@ module.exports = class Shader
 
 		if @_gila.debug and not @_gl.getShaderParameter shader, @_gl.COMPILE_STATUS
 
-			throw Error "Error compiling #{shaderNames[@type]} shader '#{@index}':\n" +
-				@_gl.getShaderInfoLog shader
+			err = @_gl.getShaderInfoLog shader
+			parts = err.match(/ERROR\: [0-9]+\:([0-9]+)\:/)
+
+			if parts? and parts[1]?
+
+				line = parseInt parts[1]
+
+			console.group "Error compiling #{shaderNames[@type]} shader '#{@index}'"
+
+			console.error err
+
+			if line?
+
+				console.log 'Error line:\n\n', @source.split("\n")[line - 1], '\n'
+
+			console.log "Shader source:", "\n\n" + @source
+
+
+			console.groupEnd()
+
+			throw Error "Shader didn't compile"
 
 		@shader = shader
