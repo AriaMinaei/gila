@@ -10,7 +10,7 @@ module.exports = class VertexAttribute
 
 		if @_gila.debug and loc is -1
 
-			throw Error "Could not get shader attribute location `#{@name}` for shader `#{@shaderProgram.id}`"
+			console.error "Could not get shader attribute location `#{@name}` for shader `#{@shaderProgram.id}`"
 
 		@location = loc
 
