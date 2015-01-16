@@ -3,7 +3,6 @@ RenderBufferManager = require './gila/RenderBufferManager'
 FrameBufferManager = require './gila/FrameBufferManager'
 Texture2DManager = require './gila/Texture2DManager'
 ExtensionManager = require './gila/ExtensionManager'
-WebGLDebugUtils = require '../../../vendor/webgl-debug/webgl-debug.js'
 DrawingManager = require './gila/DrawingManager'
 ProgramManager = require './gila/ProgramManager'
 TextureManager = require './gila/TextureManager'
@@ -11,7 +10,6 @@ ShaderManager = require './gila/ShaderManager'
 BufferManager = require './gila/BufferManager'
 exposeApi = require './gila/utility/exposeApi'
 
-# we better not lose context, or all hell will break loose
 module.exports = class Gila
 
 	self = @
@@ -72,13 +70,7 @@ module.exports = class Gila
 
 			throw Error "Could not initialize webgl context"
 
-		if @debug
-
-			@gl = WebGLDebugUtils.makeDebugContext context
-
-		else
-
-			@gl = context
+		@gl = context
 
 		@fitViewportSize()
 

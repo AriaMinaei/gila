@@ -2,18 +2,30 @@
   "name": "gila",
   "version": "0.1.0-beta.8",
   "description": "WebGL in English (work in progress)",
-  "main": "scripts/js/lib/Gila.js",
+  "main": "lib/Gila.js",
   "dependencies": {
     "options-to-index": "*"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3"
+    "coffee-script": "^1.8.0",
+    "jitter": "^1.3.0"
   },
   "scripts": {
-    "test": "node ./node_modules/coffee-script/bin/cake test",
-    "prepublish": "node ./node_modules/coffee-script/bin/cake build"
+    "compile": "coffee --bare --compile --output ./lib ./src",
+    "compile:watch": "jitter src lib -b",
+
+    "watch": "npm run compile:watch & npm run test:watch",
+    "winwatch": "start/b npm run compile:watch & npm run test:watch",
+
+    "prepublish": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AriaMinaei/gila.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AriaMinaei/gila/issues"
   },
   "author": "Aria Minaei",
   "license": "MIT",
-  "repository": "https://github.com/AriaMinaei/gila.git"
 }
