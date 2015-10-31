@@ -1,7 +1,6 @@
 string = require '../../utility/string'
 
 module.exports = class BlendShortcutList
-
 	constructor: (@_manager, @_type, @_factor) ->
 
 factorNames = [
@@ -11,23 +10,15 @@ factorNames = [
 ]
 
 for name in factorNames
-
 	funcName = string.allUpperCaseToCamelCase(name)
-
 	funcName = funcName[0].toLowerCase() + funcName.substr(1, funcName.length)
 
 	do ->
-
 		factor = WebGLRenderingContext[name]
-
 		BlendShortcutList::[funcName] = ->
-
 			@_manager._setType @_type
-
 			if @_factor isnt factor
-
 				@_factor = factor
-
 				@_manager._shouldUpdate = yes
 
 			@_manager

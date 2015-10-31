@@ -1,9 +1,7 @@
 Capability = require './capabilityManager/Capability'
 
 module.exports = class CapabilityManager
-
 	constructor: (@_drawingManager) ->
-
 		@_gl = @_drawingManager._gila.gl
 
 		@blending = new Capability @, BLEND, 0
@@ -13,15 +11,11 @@ module.exports = class CapabilityManager
 		@polygonOffsetFilling = new Capability @, POLYGON_OFFSET_FILL, 0
 
 	_enable: (capability) ->
-
 		@_gl.enable capability
-
 		return
 
 	_disable: (capability) ->
-
 		@_gl.disable capability
-
 		return
 
 	@_propsToExpose: [

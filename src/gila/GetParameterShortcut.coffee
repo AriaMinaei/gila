@@ -1,11 +1,8 @@
 module.exports = class GetParameterShortcut
-
 	constructor: (@_gila) ->
-
 		@_gl = @_gila.gl
 
 pnames = [
-
 	'ACTIVE_TEXTURE'
 	'ALIASED_LINE_WIDTH_RANGE'
 	'ALIASED_POINT_SIZE_RANGE'
@@ -97,21 +94,12 @@ pnames = [
 string = require './utility/string'
 
 for pname in pnames
-
 	funcName = string.allUpperCaseToCamelCase(pname)
-
 	funcName = funcName[0].toLowerCase() + funcName.substr(1, funcName.length)
 
 	do ->
-
 		enm = WebGLRenderingContext[pname]
-
 		Object.defineProperty GetParameterShortcut::, funcName,
-
 			get: ->
-
 				@_gl.getParameter enm
-
 			enumerable: yes
-
-		# GetParameterShortcut::[funcName]
